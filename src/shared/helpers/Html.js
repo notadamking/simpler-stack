@@ -1,7 +1,8 @@
-import React, {Component, PropTypes} from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
+import { StyleSheetServer } from 'aphrodite';
 
 /**
  * Wrapper component containing HTML metadata and boilerplate tags.
@@ -20,9 +21,12 @@ export default class Html extends Component {
   };
 
   render() {
-    const {assets, component, store} = this.props;
-    const content = component ? ReactDOM.renderToString(component) : '';
+    const { assets, component, store } = this.props;
     const head = Helmet.rewind();
+
+    const { html, css } = StyleSheetServer.renderStatic(() => {
+      return ReactDOM.renderToString(component);
+    });
 
     return (
       <html lang="en-us">
@@ -38,9 +42,10 @@ export default class Html extends Component {
           <script type="text/javascript" src="//code.jquery.com/jquery-1.10.0.min.js" />
           <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.2.0/semantic.min.css" />
           <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.2.0/semantic.min.js" />
+          <style data-aphrodite>${css.content}</style>
         </head>
         <body>
-          <div id="content" dangerouslySetInnerHTML={{__html: content}}/>
+          <div id="content" dangerouslySetInnerHTML={{__html: html}}/>
           <script dangerouslySetInnerHTML={{__html: `window.__data=${serialize(store.getState())};`}} charSet="UTF-8"/>
           <script src={assets.javascript.main} charSet="UTF-8"/>
         </body>
