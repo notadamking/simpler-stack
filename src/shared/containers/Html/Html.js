@@ -40,14 +40,17 @@ export default class Html extends Component {
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
           <script type="text/javascript" src="//code.jquery.com/jquery-1.10.0.min.js" />
-          <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.2.0/semantic.min.css" />
-          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/1.2.0/semantic.min.js" />
-          <style data-aphrodite>${css.content}</style>
+          <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" />
+          <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js" />
+          <style data-aphrodite>{css.content}</style>
         </head>
         <body>
           <div id="content" dangerouslySetInnerHTML={{__html: html}}/>
           <script dangerouslySetInnerHTML={{__html: `window.__data=${serialize(store.getState())};`}} charSet="UTF-8"/>
           <script src={assets.javascript.main} charSet="UTF-8"/>
+          <script>
+            StyleSheet.rehydrate({JSON.stringify(css.renderedClassNames)});
+          </script>
         </body>
       </html>
     );

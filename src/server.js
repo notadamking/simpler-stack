@@ -9,15 +9,15 @@ import path from 'path';
 import PrettyError from 'pretty-error';
 import http from 'http';
 import createStore from './shared/redux/create';
-import Html from './shared/helpers/Html';
+import ApiClient from './shared/helpers/ApiClient';
+import { Html } from './shared/containers';
 
 import { match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
+import { ReduxAsyncConnect, loadOnServer } from 'redux-connect';
 import createHistory from 'react-router/lib/createMemoryHistory';
 import { Provider } from 'react-redux';
 import getRoutes from './shared/routes';
-import ApiClient from './shared/helpers/ApiClient';
 
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
 const pretty = new PrettyError();
