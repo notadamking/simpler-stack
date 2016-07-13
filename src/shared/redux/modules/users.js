@@ -1,59 +1,47 @@
-import { prepareQuery } from './graphql';
+import { getUsersQuery } from '../graphql/queries';
 
-const LOAD_ALL = 'green-stack/users/LOAD_ALL';
-const LOAD_ALL_SUCCESS = 'green-stack/users/LOAD_ALL_SUCCESS';
-const LOAD_ALL_FAIL = 'green-stack/users/LOAD_ALL_FAIL';
+export const FETCH = 'graphql-request:green-stack/users/fetch';
+export const FETCH_RESPONSE = 'graphql-response:green-stack/users/fetch';
 
 const initialState = {
-  loaded: false
+  fetched: false,
+  data: {},
+  error: {}
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case LOAD_ALL:
+    case FETCH:
       return {
         ...state,
-        loading: true
+        fetching: true
       };
-    case LOAD_ALL_SUCCESS:
+    case FETCH_RESPONSE:
       return {
         ...state,
-        loading: false,
-        loaded: true,
-        data: action.result,
-        error: null
-      };
-    case LOAD_ALL_FAIL:
-      return {
-        ...state,
-        loading: false,
-        loaded: false,
-        data: null,
-        error: action.error
+        fetched: true,
+        fetching: false,
+        data: action.payload.data,
+        error: action.payload.error
       };
     default:
       return state;
   }
 }
 
-export function isLoaded(globalState) {
-  return globalState.users && globalState.users.loaded;
-}
-
-export const getUsersQuery = `
-query {
-  users {
-    id,
-    email
-  }
-}
-`;
-
-export function loadAll() {
+export function fetchUsers() {
   return {
-    types: [LOAD_ALL, LOAD_ALL_SUCCESS, LOAD_ALL_FAIL],
-    promise: (client) => client.post('/graphql', {
-      data: prepareQuery(getUsersQuery)
-    })
+    type: FETCH,
+    payload: getUsersQuery
   };
+}
+
+export function isFetched(globalState) {
+  return globalState.users && globalState.users.fetched;
+}
+
+export function fetchUsersIfNeeded(globalState) {
+  if (!isFetched(globalState)) {
+    fetchUsers();
+  }
 }

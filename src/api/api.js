@@ -1,45 +1,29 @@
-import Koa from 'koa';
-import Router from 'koa-router';
-import json from 'koa-json';
-import onerror from 'koa-onerror';
-import bodyparser from 'koa-bodyparser';
-import helmet from 'koa-helmet';
-import mount from 'koa-mount';
-import convert from 'koa-convert';
-import graphqlHTTP from 'koa-graphql';
+import express from 'express';
+import helmet from 'helmet';
+import bodyParser from 'body-parser';
+import graphqlHTTP from 'express-graphql';
 import PrettyError from 'pretty-error';
 import http from 'http';
 import SocketIO from 'socket.io';
 import config from '../config';
 import Schema from './graphql/schema';
 
-const app = new Koa();
-const server = http.createServer(app.callback());
+const app = new express();
+const server = http.Server(app);
 const pretty = new PrettyError();
 const io = new SocketIO(server);
 io.path('/ws');
 
-const _use = app.use;
-app.use = fn => _use.call(app, convert(fn));
-
 // middlewares
-app.use(bodyparser());
-app.use(json());
+app.use(bodyParser.text({ type: 'application/graphql' }));
 app.use(helmet());
 
 // setup graphql server
-app.use(mount('/graphql', graphqlHTTP({
+app.use('/', graphqlHTTP({
   schema: Schema,
-  graphiql: true
-})));
-
-// // Setup all API routes
-// const router = Router();
-// require('./routes')(router);
-//
-// // mount root routes
-// app.use(router.routes());
-// app.use(router.allowedMethods());
+  graphiql: true,
+  pretty: true
+}));
 
 const bufferSize = 100;
 const messageBuffer = new Array(bufferSize);

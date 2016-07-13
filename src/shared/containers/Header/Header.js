@@ -1,23 +1,33 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { Menu, Item, Icon, Container, Card, Label } from 'react-semantify';
-import { asyncConnect } from 'redux-connect';
-import { loadAll as loadAllUsers } from '../../redux/modules/users';
+import { connect } from 'react-redux';
+import * as actions from '../../redux/modules/users';
 
-@asyncConnect([{
-  key: 'users',
-  promise: ({ store: { dispatch }}) => {
-    return dispatch(loadAllUsers());
-  }
-}])
-class App extends Component {
+@connect(
+  state => ({
+    users: state.users.data,
+    error: state.users.error,
+    fetching: state.users.fetching,
+    fetched: state.users.fetched
+  }),
+  actions
+)
+export default class Header extends Component {
   static propTypes = {
-    users: PropTypes.array,
-    loading: PropTypes.bool,
-    error: PropTypes.string
+    users: PropTypes.object,
+    fetching: PropTypes.bool,
+    fetched: PropTypes.bool,
+    error: PropTypes.object,
+    fetchUsers: PropTypes.func
   };
 
+  componentWillMount() {
+    this.props.fetchUsers();
+  }
+
   render() {
+    const users = this.props.users;
+    console.log(users);
     return (
       <nav>
         <Menu className="top attached blue">
@@ -38,7 +48,7 @@ class App extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> {{users}}
+            <Icon className="users" /> 0
           </Label>
         </Container>
       </nav>

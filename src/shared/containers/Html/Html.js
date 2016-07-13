@@ -42,15 +42,13 @@ export default class Html extends Component {
           <script type="text/javascript" src="//code.jquery.com/jquery-1.10.0.min.js" />
           <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" />
           <script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.js" />
-          <style data-aphrodite>{css.content}</style>
+          <style data-aphrodite dangerouslySetInnerHTML={{__html: css.content}}/>
         </head>
         <body>
           <div id="content" dangerouslySetInnerHTML={{__html: html}}/>
           <script dangerouslySetInnerHTML={{__html: `window.__data=${serialize(store.getState())};`}} charSet="UTF-8"/>
+          <script dangerouslySetInnerHTML={{__html: `window.renderedClassNames=${JSON.stringify(css.renderedClassNames)};`}} charSet="UTF-8"/>
           <script src={assets.javascript.main} charSet="UTF-8"/>
-          <script>
-            StyleSheet.rehydrate({JSON.stringify(css.renderedClassNames)});
-          </script>
         </body>
       </html>
     );
