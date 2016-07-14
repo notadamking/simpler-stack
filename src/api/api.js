@@ -1,8 +1,7 @@
 import express from 'express';
-import helmet from 'helmet';
 import bodyParser from 'body-parser';
+import { graphql } from 'graphql';
 import graphqlHTTP from 'express-graphql';
-import PrettyError from 'pretty-error';
 import http from 'http';
 import SocketIO from 'socket.io';
 import config from '../config';
@@ -10,18 +9,20 @@ import Schema from './graphql/schema';
 
 const app = new express();
 const server = http.Server(app);
-const pretty = new PrettyError();
 const io = new SocketIO(server);
 io.path('/ws');
 
-// middlewares
+// parse POST body as raw text
 app.use(bodyParser.text({ type: 'application/graphql' }));
-app.use(helmet());
 
-// setup graphql server
+app.post('/graphql', async (req, res) => {
+  const result = await graphql(Schema, req.body);
+  res.send(result);
+});
+
+// setup graphiql server
 app.use('/', graphqlHTTP({
   schema: Schema,
-  graphiql: true,
   pretty: true
 }));
 

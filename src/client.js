@@ -13,11 +13,13 @@ import { ReduxAsyncConnect } from 'redux-async-connect';
 import { StyleSheet } from 'aphrodite';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
 
+import ApiClient from './shared/helpers/ApiClient';
 import getRoutes from './shared/routes';
 
+const client = new ApiClient();
 const _browserHistory = useScroll(() => browserHistory)();
 const dest = document.getElementById('content');
-const store = createStore(_browserHistory, window.__data);
+const store = createStore(_browserHistory, client, window.__data);
 const history = syncHistoryWithStore(_browserHistory, store);
 
 function initSocket() {
@@ -37,7 +39,7 @@ global.socket = initSocket();
 
 const component = (
   <Router render={(props) =>
-        <ReduxAsyncConnect {...props} filter={item => !item.deferred} />
+        <ReduxAsyncConnect {...props} helpers={{client}} filter={item => !item.deferred} />
       } history={history}>
     {getRoutes(store)}
   </Router>

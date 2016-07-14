@@ -1,7 +1,8 @@
 import { getUsersQuery } from '../graphql/queries';
 
-export const FETCH = 'graphql-request:green-stack/users/fetch';
-export const FETCH_RESPONSE = 'graphql-response:green-stack/users/fetch';
+export const FETCH = 'green-stack/users/fetch';
+export const FETCH_SUCCESS = 'green-stack/users/fetch_success';
+export const FETCH_FAIL = 'green-stack/users/fetch_fail';
 
 const initialState = {
   fetched: false,
@@ -16,32 +17,36 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         fetching: true
       };
-    case FETCH_RESPONSE:
+    case FETCH_SUCCESS:
       return {
         ...state,
         fetched: true,
         fetching: false,
-        data: action.payload.data,
-        error: action.payload.error
+        data: action.result.data,
+        error: null
+      };
+    case FETCH_FAIL:
+      return {
+        ...state,
+        fetched: false,
+        fetching: false,
+        data: null,
+        error: action.error
       };
     default:
       return state;
   }
 }
 
-export function fetchUsers() {
-  return {
-    type: FETCH,
-    payload: getUsersQuery
-  };
-}
-
 export function isFetched(globalState) {
   return globalState.users && globalState.users.fetched;
 }
 
-export function fetchUsersIfNeeded(globalState) {
-  if (!isFetched(globalState)) {
-    fetchUsers();
-  }
+export function fetch() {
+  return {
+    types: [ FETCH, FETCH_SUCCESS, FETCH_FAIL ],
+    promise: (client) => client.post('/graphql', {
+      data: getUsersQuery
+    })
+  };
 }

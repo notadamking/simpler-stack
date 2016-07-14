@@ -3,6 +3,10 @@ import jwt from 'jwt-simple';
 import thinky from '../thinky';
 import uuid from 'node-uuid';
 import { SECRET_KEY } from '../../config';
+import {
+  GraphQLObjectType,
+  GraphQLString
+}
 
 const { type } = thinky;
 const bcrypt = Promise.promisifyAll(require('bcryptjs'));
@@ -12,6 +16,29 @@ const User = thinky.createModel('user', {
   email: type.string(),
   salt: type.string(),
   hash: type.string(),
+});
+
+export const UserType = new GraphQLObjectType({
+  name: 'user',
+  description: 'a user',
+  fields: () => ({
+    id: {
+      type: GraphQLString,
+      description: `The user's unique id string.`
+    },
+    email: {
+      type: GraphQLString,
+      description: `The user's email address.`
+    },
+    salt: {
+      type: GraphQLString,
+      description: `The user's password salt.`
+    },
+    hash: {
+      type: GraphQLString,
+      description: `The user's password hash.`
+    }
+  })
 });
 
 User.defineStatic('validateToken', async token => {

@@ -66,8 +66,9 @@ app.use((req, res) => {
     // hot module replacement is enabled in the development env
     webpackIsomorphicTools.refresh();
   }
+  const client = new ApiClient(req);
   const memoryHistory = createHistory(req.originalUrl);
-  const store = createStore(memoryHistory);
+  const store = createStore(memoryHistory, client);
   const history = syncHistoryWithStore(memoryHistory, store);
 
   function hydrateOnClient() {
@@ -88,7 +89,7 @@ app.use((req, res) => {
       res.status(500);
       hydrateOnClient();
     } else if (renderProps) {
-      loadOnServer({ ...renderProps, store }).then(() => {
+      loadOnServer({ ...renderProps, store, helpers: { client } }).then(() => {
         const component = (
           <Provider store={store} key="provider">
             <ReduxAsyncConnect {...renderProps} />

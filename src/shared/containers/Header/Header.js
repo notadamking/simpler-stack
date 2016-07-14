@@ -1,8 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Card, Label } from 'react-semantify';
 import { connect } from 'react-redux';
-import * as actions from '../../redux/modules/users';
+import { asyncConnect } from 'redux-async-connect';
+import { isFetched, fetch as fetchUsers } from '../../redux/modules/users';
+import * as userActions from '../../redux/modules/users';
 
+@asyncConnect([{
+  deferred: true,
+  promise: ({ store: { dispatch, getState }}) => {
+    console.log(fetchUsers);
+    return dispatch(fetchUsers());
+  }
+}])
 @connect(
   state => ({
     users: state.users.data,
@@ -10,20 +19,15 @@ import * as actions from '../../redux/modules/users';
     fetching: state.users.fetching,
     fetched: state.users.fetched
   }),
-  actions
+  { ...userActions }
 )
 export default class Header extends Component {
   static propTypes = {
     users: PropTypes.object,
     fetching: PropTypes.bool,
     fetched: PropTypes.bool,
-    error: PropTypes.object,
-    fetchUsers: PropTypes.func
+    error: PropTypes.object
   };
-
-  componentWillMount() {
-    this.props.fetchUsers();
-  }
 
   render() {
     const users = this.props.users;

@@ -18,6 +18,6 @@ module.exports = Object.assign({
   RETHINKDB: {
     host: 'localhost',
     port: 28015,
-    db: 'green-stack'
+    db: 'green_stack'
   }
 }, environment);
