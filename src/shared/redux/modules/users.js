@@ -1,18 +1,20 @@
+import fetch from 'isomorphic-fetch';
+import { fetchGraphQL } from '../../utils/fetching';
 import { getUsersQuery } from '../graphql/queries';
 
-export const FETCH = 'green-stack/users/fetch';
-export const FETCH_SUCCESS = 'green-stack/users/fetch_success';
-export const FETCH_FAIL = 'green-stack/users/fetch_fail';
+export const FETCH_REQUEST = 'users/fetch_request';
+export const FETCH_SUCCESS = 'users/fetch_success';
+export const FETCH_ERROR = 'users/fetch_error';
 
 const initialState = {
   fetched: false,
-  data: {},
+  users: [],
   error: {}
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
-    case FETCH:
+    case FETCH_REQUEST:
       return {
         ...state,
         fetching: true
@@ -22,15 +24,15 @@ export default function reducer(state = initialState, action = {}) {
         ...state,
         fetched: true,
         fetching: false,
-        data: action.result.data,
+        users: action.users,
         error: null
       };
-    case FETCH_FAIL:
+    case FETCH_ERROR:
       return {
         ...state,
         fetched: false,
         fetching: false,
-        data: null,
+        users: null,
         error: action.error
       };
     default:
@@ -38,15 +40,19 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-export function isFetched(globalState) {
-  return globalState.users && globalState.users.fetched;
-}
-
-export function fetch() {
-  return {
-    types: [ FETCH, FETCH_SUCCESS, FETCH_FAIL ],
-    promise: (client) => client.post('/graphql', {
-      data: getUsersQuery
-    })
+export function fetchUsers() {
+  return dispatch => {
+    dispatch({ type: FETCH_REQUEST });
+    return new Promise(async (resolve, reject) => {
+      const { error, data } = await fetchGraphQL({ query: getUsersQuery });
+      if (error) {
+        dispatch({ type: FETCH_ERROR, error });
+        reject(error);
+      } else {
+        const { users } = data;
+        dispatch({ type: FETCH_SUCCESS, users });
+        resolve();
+      }
+    });
   };
 }

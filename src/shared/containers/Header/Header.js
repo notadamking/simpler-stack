@@ -1,37 +1,34 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Card, Label } from 'react-semantify';
 import { connect } from 'react-redux';
-import { asyncConnect } from 'redux-async-connect';
-import { isFetched, fetch as fetchUsers } from '../../redux/modules/users';
-import * as userActions from '../../redux/modules/users';
+import { fetchUsers } from '../../redux/modules/users';
+import { LoginModal } from '../';
 
-@asyncConnect([{
-  deferred: true,
-  promise: ({ store: { dispatch, getState }}) => {
-    console.log(fetchUsers);
-    return dispatch(fetchUsers());
-  }
-}])
 @connect(
   state => ({
-    users: state.users.data,
+    users: state.users.users,
     error: state.users.error,
     fetching: state.users.fetching,
     fetched: state.users.fetched
-  }),
-  { ...userActions }
+  })
 )
 export default class Header extends Component {
   static propTypes = {
-    users: PropTypes.object,
+    users: PropTypes.array,
     fetching: PropTypes.bool,
     fetched: PropTypes.bool,
-    error: PropTypes.object
+    error: PropTypes.object,
+    dispatch: PropTypes.func.isRequired
   };
+
+  constructor(props) {
+    super(props);
+    const { dispatch } = props;
+    dispatch(fetchUsers());
+  }
 
   render() {
     const users = this.props.users;
-    console.log(users);
     return (
       <nav>
         <Menu className="top attached blue">
@@ -52,9 +49,10 @@ export default class Header extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> 0
+            <Icon className="users" /> {users.length}
           </Label>
         </Container>
+        <LoginModal show="true" />
       </nav>
     );
   }

@@ -1,6 +1,6 @@
 import Express from 'express';
 import React from 'react';
-import ReactDOM from 'react-dom/server';
+import { renderToStaticMarkup, renderToString } from 'react-dom-stream/server';
 import config from './config';
 import favicon from 'serve-favicon';
 import compression from 'compression';
@@ -9,14 +9,12 @@ import path from 'path';
 import PrettyError from 'pretty-error';
 import http from 'http';
 import createStore from './shared/redux/create';
-import ApiClient from './shared/helpers/ApiClient';
 import { Html } from './shared/containers';
 
 import { match } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import { ReduxAsyncConnect, loadOnServer } from 'redux-async-connect';
+import { loadOnServer } from 'redux-async-connect';
 import createHistory from 'react-router/lib/createMemoryHistory';
-import { Provider } from 'react-redux';
 import getRoutes from './shared/routes';
 
 const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
@@ -66,14 +64,13 @@ app.use((req, res) => {
     // hot module replacement is enabled in the development env
     webpackIsomorphicTools.refresh();
   }
-  const client = new ApiClient(req);
   const memoryHistory = createHistory(req.originalUrl);
-  const store = createStore(memoryHistory, client);
+  const store = createStore(memoryHistory);
   const history = syncHistoryWithStore(memoryHistory, store);
 
   function hydrateOnClient() {
-    res.send('<!doctype html>\n' +
-      ReactDOM.renderToString(<Html assets={webpackIsomorphicTools.assets()} store={store}/>));
+    // res.send('<!doctype html>\n' +
+    renderToString(<Html assets={webpackIsomorphicTools.assets()} store={store}/>);
   }
 
   if (__DISABLE_SSR__) {
@@ -81,27 +78,29 @@ app.use((req, res) => {
     return;
   }
 
+  function renderStream(renderProps) {
+    const htmlStream = renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}
+                                              store={store} renderProps={renderProps}/>);
+    htmlStream.pipe(res, { end: false });
+    htmlStream.on('end', () => res.end());
+  }
+
   match({ history, routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
     if (redirectLocation) {
       res.redirect(redirectLocation.pathname + redirectLocation.search);
     } else if (error) {
       console.error('ROUTER ERROR:', pretty.render(error));
-      res.status(500);
+      res.status(500).send(error.message);
       hydrateOnClient();
     } else if (renderProps) {
-      loadOnServer({ ...renderProps, store, helpers: { client } }).then(() => {
-        const component = (
-          <Provider store={store} key="provider">
-            <ReduxAsyncConnect {...renderProps} />
-          </Provider>
-        );
-
+      loadOnServer({ ...renderProps, store }).then(() => {
         res.status(200);
 
         global.navigator = { userAgent: req.headers['user-agent'] };
 
-        res.send('<!doctype html>\n' +
-          ReactDOM.renderToString(<Html assets={webpackIsomorphicTools.assets()} component={component} store={store}/>));
+        // res.send('<!doctype html>\n' +
+        //  ReactDOM.renderToString(<Html assets={webpackIsomorphicTools.assets()} component={component} store={store}/>));
+        renderStream(renderProps);
       });
     } else {
       res.status(404).send('Not found');

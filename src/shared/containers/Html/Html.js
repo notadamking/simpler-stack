@@ -1,5 +1,7 @@
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom/server';
+import { Provider } from 'react-redux';
+import { ReduxAsyncConnect } from 'redux-async-connect';
+import { renderToString } from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
 import { StyleSheetServer } from 'aphrodite';
@@ -16,16 +18,22 @@ import { StyleSheetServer } from 'aphrodite';
 export default class Html extends Component {
   static propTypes = {
     assets: PropTypes.object,
-    component: PropTypes.node,
-    store: PropTypes.object
+    store: PropTypes.object,
+    renderProps: PropTypes.object
   };
 
   render() {
-    const { assets, component, store } = this.props;
+    const { assets, store, renderProps } = this.props;
     const head = Helmet.rewind();
 
+    const component = (
+      <Provider store={store} key="provider">
+        <ReduxAsyncConnect {...renderProps} />
+      </Provider>
+    );
+
     const { html, css } = StyleSheetServer.renderStatic(() => {
-      return ReactDOM.renderToString(component);
+      return renderToString(component);
     });
 
     return (

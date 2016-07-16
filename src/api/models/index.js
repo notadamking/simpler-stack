@@ -1,1 +1,1 @@
-exports.User = require('./user');
+export User from './user';

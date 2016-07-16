@@ -1,10 +1,11 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { graphql } from 'graphql';
 import graphqlHTTP from 'express-graphql';
+import jwt from 'express-jwt';
 import http from 'http';
 import SocketIO from 'socket.io';
-import config from '../config';
+
+import { apiHost, apiPort, secretKey as secret } from '../config';
 import Schema from './graphql/schema';
 
 const app = new express();
@@ -12,31 +13,24 @@ const server = http.Server(app);
 const io = new SocketIO(server);
 io.path('/ws');
 
-// parse POST body as raw text
-app.use(bodyParser.text({ type: 'application/graphql' }));
-
-app.post('/graphql', async (req, res) => {
-  const result = await graphql(Schema, req.body);
-  res.send(result);
-});
-
-// setup graphiql server
-app.use('/', graphqlHTTP({
+app.use('/graphql', jwt({ secret, credentialsRequired: false }), graphqlHTTP({
   schema: Schema,
-  pretty: true
+  graphiql: true
 }));
+
+app.use(bodyParser.json());
 
 const bufferSize = 100;
 const messageBuffer = new Array(bufferSize);
 let messageIndex = 0;
 
-if (config.apiPort) {
-  const runnable = app.listen(config.apiPort, (err) => {
+if (apiPort) {
+  const runnable = app.listen(apiPort, (err) => {
     if (err) {
       console.error(err);
     }
-    console.info('----\n==> 🌎  API is running on port %s', config.apiPort);
-    console.info('==> 💻  Send requests to http://%s:%s', config.apiHost, config.apiPort);
+    console.info('----\n==> 🌎  API is running on port %s', apiPort);
+    console.info('==> 💻  Send requests to http://%s:%s', apiHost, apiPort);
   });
 
   io.on('connection', (socket) => {
