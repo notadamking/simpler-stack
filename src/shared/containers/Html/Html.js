@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { Provider } from 'react-redux';
-import { ReduxAsyncConnect } from 'redux-async-connect';
 import { renderToString } from 'react-dom/server';
 import serialize from 'serialize-javascript';
 import Helmet from 'react-helmet';
+import { RouterContext } from 'react-router';
+import { ApolloProvider } from 'react-apollo';
 import { StyleSheetServer } from 'aphrodite';
 
 /**
@@ -19,17 +19,18 @@ export default class Html extends Component {
   static propTypes = {
     assets: PropTypes.object,
     store: PropTypes.object,
+    client: PropTypes.object,
     renderProps: PropTypes.object
   };
 
   render() {
-    const { assets, store, renderProps } = this.props;
+    const { assets, store, client, renderProps } = this.props;
     const head = Helmet.rewind();
 
     const component = (
-      <Provider store={store} key="provider">
-        <ReduxAsyncConnect {...renderProps} />
-      </Provider>
+      <ApolloProvider client={client} store={store}>
+        <RouterContext {...renderProps}/>
+      </ApolloProvider>
     );
 
     const { html, css } = StyleSheetServer.renderStatic(() => {

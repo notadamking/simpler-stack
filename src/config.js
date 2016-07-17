@@ -15,6 +15,7 @@ module.exports = Object.assign({
   apiHost: process.env.APIHOST || 'localhost',
   apiPort: process.env.APIPORT || 3030,
   authTokenName: 'GREEN_STACK_TOKEN',
+  graphqlEndpoint: '/api/graphql',
   secretKey: '29b5c43f-39bf-4c12-9243-6c0180d6d600',
   rethinkDB: {
     host: 'localhost',

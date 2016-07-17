@@ -1,23 +1,22 @@
 import Express from 'express';
 import React from 'react';
-import { renderToStaticMarkup, renderToString } from 'react-dom-stream/server';
-import config from './config';
 import favicon from 'serve-favicon';
 import compression from 'compression';
+import http from 'http';
 import httpProxy from 'http-proxy';
 import path from 'path';
 import PrettyError from 'pretty-error';
-import http from 'http';
-import createStore from './shared/redux/create';
-import { Html } from './shared/containers';
-
-import { match } from 'react-router';
+import { renderToStaticMarkup, renderToString } from 'react-dom-stream/server';
+import { createMemoryHistory, match, RouterContext, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import { loadOnServer } from 'redux-async-connect';
-import createHistory from 'react-router/lib/createMemoryHistory';
-import getRoutes from './shared/routes';
+import { host, port, apiHost, apiPort } from './config';
 
-const targetUrl = `http://${config.apiHost}:${config.apiPort}`;
+import { Html } from './shared/containers';
+import getRoutes from './shared/routes';
+import createStore from './shared/redux/create';
+import ApolloClient from './shared/helpers/ApolloClient';
+
+const targetUrl = `http://${apiHost}:${apiPort}`;
 const pretty = new PrettyError();
 const app = new Express();
 const server = new http.Server(app);
@@ -64,13 +63,15 @@ app.use((req, res) => {
     // hot module replacement is enabled in the development env
     webpackIsomorphicTools.refresh();
   }
-  const memoryHistory = createHistory(req.originalUrl);
+  const client = ApolloClient();
+  const memoryHistory = createMemoryHistory(req.originalUrl);
   const store = createStore(memoryHistory);
   const history = syncHistoryWithStore(memoryHistory, store);
+  const routes = getRoutes(store);
 
   function hydrateOnClient() {
-    // res.send('<!doctype html>\n' +
-    renderToString(<Html assets={webpackIsomorphicTools.assets()} store={store}/>);
+    renderToString(<Html assets={webpackIsomorphicTools.assets()} client={client}
+                    store={store}/>);
   }
 
   if (__DISABLE_SSR__) {
@@ -79,42 +80,39 @@ app.use((req, res) => {
   }
 
   function renderStream(renderProps) {
-    const htmlStream = renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}
-                                              store={store} renderProps={renderProps}/>);
+    const htmlStream =
+      renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}
+                            client={client} store={store} renderProps={renderProps}/>);
     htmlStream.pipe(res, { end: false });
     htmlStream.on('end', () => res.end());
   }
 
-  match({ history, routes: getRoutes(store), location: req.originalUrl }, (error, redirectLocation, renderProps) => {
+  match({ history, routes, location: req.originalUrl }, (err, redirectLocation, renderProps) => {
     if (redirectLocation) {
-      res.redirect(redirectLocation.pathname + redirectLocation.search);
-    } else if (error) {
-      console.error('ROUTER ERROR:', pretty.render(error));
-      res.status(500).send(error.message);
+      res.redirect(302, redirectLocation.pathname + redirectLocation.search);
+    } else if (err) {
+      console.error('ROUTER ERROR:', pretty.render(err));
+      res.status(500).send(err.message);
       hydrateOnClient();
-    } else if (renderProps) {
-      loadOnServer({ ...renderProps, store }).then(() => {
+    } else if (!renderProps) {
+      res.status(404).send('Not found');
+    } else {
         res.status(200);
 
-        global.navigator = { userAgent: req.headers['user-agent'] };
+        // global.navigator = { userAgent: req.headers['user-agent'] };
 
-        // res.send('<!doctype html>\n' +
-        //  ReactDOM.renderToString(<Html assets={webpackIsomorphicTools.assets()} component={component} store={store}/>));
         renderStream(renderProps);
-      });
-    } else {
-      res.status(404).send('Not found');
     }
   });
 });
 
-if (config.port) {
-  server.listen(config.port, (err) => {
+if (port) {
+  server.listen(port, (err) => {
     if (err) {
       console.error(err);
     }
-    console.info('----\n==> ✅  Server-rendered app is running, talking to API server on %s.', config.apiPort);
-    console.info('==> 💻  Open http://%s:%s in a browser to view the app.', config.host, config.port);
+    console.info('----\n==> ✅  Server-rendered app is running, talking to API server on %s.', apiPort);
+    console.info('==> 💻  Open http://%s:%s in a browser to view the app.', host, port);
   });
 } else {
   console.error('==>     ERROR: No PORT environment variable has been specified');

@@ -93,6 +93,7 @@
   },
   "dependencies": {
     "aphrodite": "^0.4.0",
+    "apollo-client": "^0.4.1",
     "axios": "^0.12.0",
     "babel-core": "^6.5.2",
     "babel-loader": "^6.2.1",
@@ -146,6 +147,7 @@
     "piping": "^0.3.0",
     "pretty-error": "^1.2.0",
     "react": "^0.14.8",
+    "react-apollo": "^0.3.19",
     "react-dom": "^0.14.8",
     "react-dom-stream": "^0.5.1",
     "react-helmet": "^2.2.0",

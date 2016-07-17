@@ -46,6 +46,10 @@ export default {
   },
   users: {
     type: new GraphQLList(UserType),
-    resolve: async () => await User.run()
+    resolve: async () => {
+      const u = await User.run();
+      console.log('users', u);
+      return u;
+    }
   }
 };

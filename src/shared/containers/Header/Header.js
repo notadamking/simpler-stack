@@ -1,34 +1,34 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Card, Label } from 'react-semantify';
-import { connect } from 'react-redux';
-import { fetchUsers } from '../../redux/modules/users';
+import { connect } from 'react-apollo';
+import gql from 'graphql-tag';
+
 import { LoginModal } from '../';
 
-@connect(
-  state => ({
-    users: state.users.users,
-    error: state.users.error,
-    fetching: state.users.fetching,
-    fetched: state.users.fetched
-  })
-)
+const mapQueriesToProps = ({ ownProps, state }) => ({
+  data: {
+    query: gql`
+    query {
+      users {
+        id,
+        email
+      }
+    }
+    `
+  }
+});
+
+@connect({
+  mapQueriesToProps
+})
 export default class Header extends Component {
   static propTypes = {
-    users: PropTypes.array,
-    fetching: PropTypes.bool,
-    fetched: PropTypes.bool,
-    error: PropTypes.object,
-    dispatch: PropTypes.func.isRequired
+    data: PropTypes.object
   };
 
-  constructor(props) {
-    super(props);
-    const { dispatch } = props;
-    dispatch(fetchUsers());
-  }
-
   render() {
-    const users = this.props.users;
+    const { data } = this.props;
+    console.log(data);
     return (
       <nav>
         <Menu className="top attached blue">
@@ -49,10 +49,10 @@ export default class Header extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> {users.length}
+            <Icon className="users" /> 0
           </Label>
         </Container>
-        <LoginModal show="true" />
+        <LoginModal show />
       </nav>
     );
   }

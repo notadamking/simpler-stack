@@ -63,7 +63,7 @@ export default class LoginModal extends Component {
               </Input>
             </Field>
           </Fields>
-          <Button type="submit" className="orange" disabled={submitting}>
+          <Button className="orange" disabled={submitting}>
             Login
           </Button>
         </Form>

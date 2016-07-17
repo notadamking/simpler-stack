@@ -1,8 +1,8 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, combineReducers, applyMiddleware } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import thunkMiddleware from 'redux-thunk';
 import createLogger from 'redux-logger';
-import rootReducer from './modules/reducer';
+import * as reducers from './modules';
 
 const loggerMiddleware = createLogger({
   level: 'info',
@@ -13,29 +13,20 @@ export default (history, initialState) => {
   // Sync dispatched route actions to the history
   const reduxRouterMiddleware = routerMiddleware(history);
 
-  let middleware = [ thunkMiddleware, reduxRouterMiddleware ];
+  const middleware = [ thunkMiddleware, reduxRouterMiddleware ];
 
-  let finalCreateStore;
-  if (__DEVELOPMENT__ && __CLIENT__ && __DEVTOOLS__) {
-    const { persistState } = require('redux-devtools');
-    const DevTools = require('../containers/DevTools/DevTools');
-
-    middleware = [ ...middleware, loggerMiddleware ];
-
-    finalCreateStore = compose(
-      applyMiddleware(...middleware),
-      window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),
-      persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
-    )(createStore);
-  } else {
-    finalCreateStore = applyMiddleware(...middleware)(createStore);
-  }
-
-  const store = finalCreateStore(rootReducer, initialState);
+  const store = createStore(
+    combineReducers({
+      ...reducers
+    }),
+    applyMiddleware(...middleware)
+  );
 
   if (__DEVELOPMENT__ && module.hot) {
-    module.hot.accept('./modules/reducer', () => {
-      store.replaceReducer(require('./modules/reducer'));
+    module.hot.accept('./modules', () => {
+      store.replaceReducer(combineReducers({
+        ...require('./modules')
+      }));
     });
   }
 
