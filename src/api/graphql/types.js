@@ -1,13 +1,11 @@
-import { GraphQLScalarType } from 'graphql';
 import { GraphQLError } from 'graphql/error';
 import { Kind } from 'graphql/language';
 import validator from 'validator';
 
-export const GraphQLEmailType = new GraphQLScalarType({
-  name: 'Email',
-  serialize: value => validator.normalizeEmail(value),
-  parseValue: value => validator.normalizeEmail(value),
-  parseLiteral: ast => {
+export const EmailScalar = {
+  __serialize: value => validator.normalizeEmail(value),
+  __parseValue: value => validator.normalizeEmail(value),
+  __parseLiteral: ast => {
     if (ast.kind !== Kind.STRING) {
       throw new GraphQLError(`Query error: Email is not a string, it is a: ${ast.kind}`, [ast]);
     }
@@ -22,13 +20,12 @@ export const GraphQLEmailType = new GraphQLScalarType({
     }
     return validator.normalizeEmail(ast.value);
   }
-});
+};
 
-export const GraphQLPasswordType = new GraphQLScalarType({
-  name: 'Password',
-  serialize: value => String(value),
-  parseValue: value => String(value),
-  parseLiteral: ast => {
+export const PasswordScalar = {
+  __serialize: value => String(value),
+  __parseValue: value => String(value),
+  __parseLiteral: ast => {
     if (ast.kind !== Kind.STRING) {
       throw new GraphQLError(`Query error: Password is not a string, it is a: ${ast.kind}`, [ast]);
     }
@@ -40,13 +37,12 @@ export const GraphQLPasswordType = new GraphQLScalarType({
     }
     return String(ast.value);
   }
-});
+};
 
-export const GraphQLURLType = new GraphQLScalarType({
-  name: 'URL',
-  serialize: value => String(value),
-  parseValue: value => String(value),
-  parseLiteral: ast => {
+export const URLScalar = {
+  __serialize: value => String(value),
+  __parseValue: value => String(value),
+  __parseLiteral: ast => {
     if (!validator.isURL(ast.value)) {
       throw new GraphQLError('Query error: Not a valid URL', [ast]);
     }
@@ -61,4 +57,4 @@ export const GraphQLURLType = new GraphQLScalarType({
     }
     return String(ast.value);
   }
-});
+};

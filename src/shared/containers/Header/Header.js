@@ -2,8 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Card, Label } from 'react-semantify';
 import { connect } from 'react-apollo';
 import gql from 'graphql-tag';
+import { isEmpty } from 'lodash';
 
-import { LoginModal } from '../';
+import checkAuth from '../../decorators/checkAuth';
+import { Modal } from '../../components';
+import { LoginForm } from '../';
 
 const mapQueriesToProps = ({ ownProps, state }) => ({
   data: {
@@ -18,6 +21,7 @@ const mapQueriesToProps = ({ ownProps, state }) => ({
   }
 });
 
+@checkAuth()
 @connect({
   mapQueriesToProps
 })
@@ -26,9 +30,12 @@ export default class Header extends Component {
     data: PropTypes.object
   };
 
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  };
+
   render() {
     const { data } = this.props;
-    console.log(data);
     return (
       <nav>
         <Menu className="top attached blue">
@@ -49,10 +56,12 @@ export default class Header extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> 0
+            <Icon className="users" /> {!isEmpty(data.users) && data.users.length}
           </Label>
         </Container>
-        <LoginModal show />
+        <Modal>
+          <LoginForm />
+        </Modal>
       </nav>
     );
   }

@@ -3,5 +3,5 @@ export Header from './Header/Header';
 export Html from './Html/Html';
 export Chat from './Chat/Chat';
 export Home from './Home/Home';
-export LoginModal from './LoginModal/LoginModal';
+export LoginForm from './LoginForm/LoginForm';
 export NotFound from './NotFound/NotFound';

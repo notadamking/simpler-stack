@@ -16,6 +16,7 @@ import getRoutes from './shared/routes';
 import createStore from './shared/redux/create';
 import ApolloClient from './shared/helpers/ApolloClient';
 
+export const client = ApolloClient();
 const targetUrl = `http://${apiHost}:${apiPort}`;
 const pretty = new PrettyError();
 const app = new Express();
@@ -63,7 +64,6 @@ app.use((req, res) => {
     // hot module replacement is enabled in the development env
     webpackIsomorphicTools.refresh();
   }
-  const client = ApolloClient();
   const memoryHistory = createMemoryHistory(req.originalUrl);
   const store = createStore(memoryHistory);
   const history = syncHistoryWithStore(memoryHistory, store);
@@ -79,14 +79,6 @@ app.use((req, res) => {
     return;
   }
 
-  function renderStream(renderProps) {
-    const htmlStream =
-      renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}
-                            client={client} store={store} renderProps={renderProps}/>);
-    htmlStream.pipe(res, { end: false });
-    htmlStream.on('end', () => res.end());
-  }
-
   match({ history, routes, location: req.originalUrl }, (err, redirectLocation, renderProps) => {
     if (redirectLocation) {
       res.redirect(302, redirectLocation.pathname + redirectLocation.search);
@@ -97,11 +89,12 @@ app.use((req, res) => {
     } else if (!renderProps) {
       res.status(404).send('Not found');
     } else {
-        res.status(200);
-
-        // global.navigator = { userAgent: req.headers['user-agent'] };
-
-        renderStream(renderProps);
+      res.status(200);
+      const htmlStream =
+        renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}
+                              client={client} store={store} renderProps={renderProps}/>);
+      htmlStream.pipe(res, { end: false });
+      htmlStream.on('end', () => res.end());
     }
   });
 });

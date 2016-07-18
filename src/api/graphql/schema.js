@@ -1,10 +1,37 @@
-import { GraphQLSchema } from 'graphql';
-import RootQuery from './query';
-import RootMutation from './mutation';
+import { merge } from 'lodash';
+import { userTypes, userQueries, userMutations, userResolvers } from './schemas';
+import { EmailScalar, PasswordScalar } from './types';
 
-const Schema = new GraphQLSchema({
-  query: RootQuery,
+export const schema = [`
+scalar Email
+scalar Password
+
+${userTypes}
+
+type RootQuery {
+  ${userQueries}
+}
+
+type RootMutation {
+  ${userMutations}
+}
+
+schema {
+  query: RootQuery
   mutation: RootMutation
-});
+}
+`];
 
-export default Schema;
+export const resolvers = {
+  Email: EmailScalar,
+  Password: PasswordScalar,
+  RootQuery: {
+    ...userResolvers.Query
+  },
+  RootMutation: {
+    ...userResolvers.Mutation
+  },
+  AuthedUser: {
+    ...userResolvers.AuthedUser
+  }
+};

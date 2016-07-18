@@ -1,24 +1,37 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import graphqlHTTP from 'express-graphql';
-import jwt from 'express-jwt';
+import { apolloServer } from 'apollo-server';
 import http from 'http';
 import SocketIO from 'socket.io';
 
 import { apiHost, apiPort, secretKey as secret } from '../config';
-import Schema from './graphql/schema';
+import { schema, resolvers } from './graphql/schema';
+import { User } from './models';
 
 const app = new express();
 const server = http.Server(app);
 const io = new SocketIO(server);
 io.path('/ws');
 
-app.use('/graphql', jwt({ secret, credentialsRequired: false }), graphqlHTTP({
-  schema: Schema,
-  graphiql: true
+app.use('/graphql', apolloServer(async (req) => {
+  const authToken = req.headers.authorization;
+  let opts = {
+    schema,
+    resolvers,
+    graphiql: true,
+    pretty: true
+  };
+  if (authToken && authToken !== '') {
+    const user = await User.fromToken(authToken);
+    opts = {
+      ...opts,
+      context: {
+        user
+      }
+    };
+  }
+  return opts;
 }));
-
-app.use(bodyParser.json());
 
 const bufferSize = 100;
 const messageBuffer = new Array(bufferSize);

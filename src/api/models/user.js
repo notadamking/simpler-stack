@@ -1,69 +1,27 @@
 import Promise from 'bluebird';
 import thinky from '../thinky';
-import uuid from 'node-uuid';
 import jwt from 'jsonwebtoken';
 import { secretKey, isProduction } from '../../config';
-import {
-  GraphQLObjectType,
-  GraphQLString
-} from 'graphql';
-import {
-  GraphQLEmailType
-} from '../graphql/types';
 import { isEmail } from 'validator';
 
 const { type } = thinky;
 const bcrypt = Promise.promisifyAll(require('bcryptjs'));
+const verifyJwt = Promise.promisify(jwt.verify);
 
 const User = thinky.createModel('user', {
-  id: type.string().default(uuid.v4()),
+  id: type.string(),
   email: type.string().validator(isEmail),
   salt: type.string(),
   hash: type.string(),
 });
 
-export const UserType = new GraphQLObjectType({
-  name: 'User',
-  description: 'A user',
-  fields: () => ({
-    id: {
-      type: GraphQLString,
-      description: `The user's unique id string`
-    },
-    email: {
-      type: GraphQLEmailType,
-      description: `The user's email address`
-    },
-    salt: {
-      type: GraphQLString,
-      description: `The user's password salt`
-    },
-    hash: {
-      type: GraphQLString,
-      description: `The user's password hash`
-    }
-  })
-});
-
-export const AuthedUserType = new GraphQLObjectType({
-  name: 'AuthedUser',
-  description: 'An authenticated user',
-  fields: () => ({
-    user: {
-      type: UserType,
-      description: 'An authenticated user'
-    },
-    authToken: {
-      type: GraphQLString,
-      description: 'The jwt for quick authentication'
-    }
-  })
-});
-
-User.ensureIndex('email');
-
 User.define('signJwt', function signJwt() {
   return jwt.sign({ id: this.id }, secretKey, { expiresIn: '7d' });
+});
+
+User.defineStatic('fromToken', async function fromToken(token) {
+  const { id } = await verifyJwt(token, secretKey);
+  return await User.get(id);
 });
 
 User.define('validatePassword', async function validatePassword(password) {
@@ -73,8 +31,6 @@ User.define('validatePassword', async function validatePassword(password) {
 
 User.define('setPassword', async function setPassword(password) {
   if (!password) { throw new Error('No password was given.'); }
-
-  // console.log(`Setting password to ${password}.`);
 
   const rounds = isProduction ? 12 : 10;
 

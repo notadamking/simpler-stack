@@ -17,7 +17,7 @@ import ApolloClient from './shared/helpers/ApolloClient';
 
 const dest = document.getElementById('content');
 
-const client = ApolloClient();
+export const client = ApolloClient();
 const _browserHistory = useScroll(() => browserHistory)();
 const store = createStore(_browserHistory, window.__data);
 const history = syncHistoryWithStore(_browserHistory, store);
