@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import { apolloServer } from 'apollo-server';
 import http from 'http';
 import SocketIO from 'socket.io';
