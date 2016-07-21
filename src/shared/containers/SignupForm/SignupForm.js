@@ -2,12 +2,11 @@ import React, { Component, PropTypes } from 'react';
 import { Header, Divider, Form, Field, Segment, Icon,
   Input, Button, Message } from 'react-semantify';
 import { connect } from 'react-apollo';
-import { isEmpty } from 'lodash';
 import classNames from 'classnames';
 
 import validateForm from '../../decorators/validateForm';
 import schema from './validate';
-import { loginUser } from '../../redux/modules/auth';
+import { signupUser, clearErrors } from '../../redux/modules/auth';
 
 @connect({
   mapStateToProps: (state) => {
@@ -18,8 +17,8 @@ import { loginUser } from '../../redux/modules/auth';
   }
 })
 @validateForm({
-  form: 'login',
-  fields: [ 'email', 'password' ],
+  form: 'signup',
+  fields: [ 'name', 'email', 'password' ],
   schema
 })
 export default class LoginForm extends Component {
@@ -34,8 +33,8 @@ export default class LoginForm extends Component {
   };
 
   async onSubmit() {
-    const { dispatch, onSuccess, fields: { email, password } } = this.props;
-    await dispatch(loginUser(email.value, password.value));
+    const { dispatch, onSuccess, fields: { name, email, password } } = this.props;
+    await dispatch(signupUser(name.value, email.value, password.value));
 
     // this.props.authenticated because dispatch changes state
     if (this.props.authenticated && onSuccess) {
@@ -44,19 +43,27 @@ export default class LoginForm extends Component {
   }
 
   render() {
-    const { submitError, authenticated, handleSubmit, submitting, onSuccess,
-      fields: { email, password } } = this.props;
+    const { submitError, authenticated, handleSubmit, submitting,
+      fields: { name, email, password } } = this.props;
 
     return (
       <Segment className="stacked">
         <Header>
-          Login
+          Sign up
         </Header>
         <Divider />
         <Message className={classNames('error', { hidden: !submitError })}>
-          <strong>Login failed.</strong> {submitError}
+          <strong>Sign up failed.</strong> {submitError}
         </Message>
         <Form className="padded large" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+          <Field className={classNames({
+            error: name.touched && name.error
+          })}>
+            <Input className="icon">
+              <input name="name" placeholder="name" type="name" {...name}/>
+              <Icon className="talk"/>
+            </Input>
+          </Field>
           <Field className={classNames({
             error: email.touched && email.error
           })}>
@@ -77,12 +84,13 @@ export default class LoginForm extends Component {
             Login
           </Button>
           <Message className={classNames('error', {
-            visible: (email.touched && email.error) || (password.touched && password.error)
+            visible: (name.touched && name.error) || (email.touched && email.error) || (password.touched && password.error)
           })}>
             <div className="header">
               Please fix errors before submitting
             </div>
             <ul className="list">
+              {name.touched && name.error && <li>{name.error}</li>}
               {email.touched && email.error && <li>{email.error}</li>}
               {password.touched && password.error && <li>{password.error}</li>}
             </ul>

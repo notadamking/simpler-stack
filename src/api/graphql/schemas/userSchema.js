@@ -1,27 +1,28 @@
-import { isEmpty } from 'lodash';
+import { isEmpty, head } from 'lodash';
 import { User } from '../../models';
 
 export const userTypes = `
-type User {
-  id: String!
-  email: Email!
-}
+  type User {
+    id: String!
+    name: String!
+    email: Email!
+  }
 
-type AuthedUser {
-  user: User!
-  authToken: String!
-}
+  type AuthedUser {
+    user: User!
+    authToken: String!
+  }
 `;
 
 export const userQueries = `
-user(id: String!): User
-users: [User]
-currentUser: User
-loginUser: AuthedUser
+  user(id: String!): User
+  users: [User]
+  currentUser: User
+  loginUser(email: Email!, password: Password!): AuthedUser
 `;
 
 export const userMutations = `
-createUser(email: Email!, password: Password!): AuthedUser
+  createUser(name: String!, email: Email!, password: Password!): AuthedUser
 `;
 
 export const userResolvers = {
@@ -35,20 +36,23 @@ export const userResolvers = {
     loginUser: async (root, { email, password }) => {
       const users = await User.filter({ email });
       if (isEmpty(users)) {
-        throw new Error('Could not login. No user with that email address exists.');
+        throw new Error('No user with that email address exists.');
       }
-      const user = users.model;
+      const user = head(users);
+      if (!await user.validatePassword(password)) {
+        throw new Error('Invalid email or password.');
+      }
       const authToken = user.signJwt();
       return { user, authToken };
     },
   },
   Mutation: {
-    createUser: async (root, { email, password }) => {
+    createUser: async (root, { name, email, password }) => {
       const exists = await User.filter({ email });
       if (!isEmpty(exists)) {
-        throw new Error('Cannot create user. Email address is already in use.');
+        throw new Error('That email address is already in use.');
       }
-      const user = new User({ email });
+      const user = new User({ name, email });
       await user.setPassword(password);
       const authToken = user.signJwt();
       return { user, authToken };

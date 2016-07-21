@@ -15,5 +15,10 @@ export default () => {
     }
   }]);
   const shouldBatch = !(__DEVELOPMENT__);
-  return new ApolloClient({ networkInterface, shouldBatch });
+  return new ApolloClient({
+    networkInterface,
+    shouldBatch,
+    formatError: (error) => `GQL Error: ${error}`,
+    printErrors: (__DEVELOPMENT__)
+  });
 };

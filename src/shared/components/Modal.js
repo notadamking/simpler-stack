@@ -1,12 +1,12 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { ApolloProvider } from 'react-apollo';
-import { Modal as SemanticModal } from 'react-semantify';
 
 export default class Modal extends Component {
   static propTypes = {
-    shouldShow: PropTypes.string,
-    children: PropTypes.object
+    children: PropTypes.object,
+    onHide: PropTypes.func,
+    modalClasses: PropTypes.string
   };
 
   static contextTypes = {
@@ -14,35 +14,39 @@ export default class Modal extends Component {
   };
 
   static defaultProps = {
-    shouldShow: 'true'
+    modalClasses: ''
   };
 
   componentDidMount() {
     this.modalTarget = document.createElement('div');
-    this.modalTarget.className = 'ui modal';
+    this.modalTarget.className = `ui modal ${this.props.modalClasses}`;
     document.body.appendChild(this.modalTarget);
     this._render();
   }
 
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.modalTarget);
-    document.body.removeChild(this.modalTarget);
+    $('.ui.modals').remove();
   }
 
   _render() {
-    let client;
-    if (__CLIENT__) {
-      client = require('../../client').client;
-    } else {
-      client = require('../../server').client;
-    }
+    const { client } = (__CLIENT__) ? require('../../client') : require('../../server');
+
     ReactDOM.render(
       <ApolloProvider store={this.context.store} client={client}>
         <div>{this.props.children}</div>
       </ApolloProvider>,
       this.modalTarget
     );
-    $('.ui.modal').modal('show');
+    $('.ui.modal').modal({
+      onHidden: () => {
+        if (this.props.onHide) {
+          this.props.onHide();
+        } else {
+          this.componentWillUnmount();
+        }
+      }
+    }).modal('show');
   }
 
   render() {

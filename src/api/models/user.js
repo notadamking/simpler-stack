@@ -10,6 +10,7 @@ const verifyJwt = Promise.promisify(jwt.verify);
 
 const User = thinky.createModel('user', {
   id: type.string(),
+  name: type.string(),
   email: type.string().validator(isEmail),
   salt: type.string(),
   hash: type.string(),

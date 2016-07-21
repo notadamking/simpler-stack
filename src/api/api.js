@@ -15,6 +15,7 @@ io.path('/ws');
 
 app.use('/graphql', apolloServer(async (req) => {
   const authToken = req.headers.authorization;
+
   let opts = {
     schema,
     resolvers,

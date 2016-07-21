@@ -119,6 +119,7 @@
     "express-session": "^1.12.1",
     "file-loader": "^0.8.5",
     "graphql": "^0.6.0",
+    "graphql-errors": "^2.1.0",
     "graphql-thinky": "^0.1.7",
     "hoist-non-react-statics": "^1.0.3",
     "http-proxy": "^1.12.0",
