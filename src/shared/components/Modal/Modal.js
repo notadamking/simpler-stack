@@ -30,7 +30,7 @@ export default class Modal extends Component {
   }
 
   _render() {
-    const { client } = (__CLIENT__) ? require('../../client') : require('../../server');
+    const { client } = (__CLIENT__) ? require('../../../client') : require('../../../server');
 
     ReactDOM.render(
       <ApolloProvider store={this.context.store} client={client}>

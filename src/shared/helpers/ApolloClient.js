@@ -5,7 +5,7 @@ export default () => {
   const networkInterface = createNetworkInterface(graphqlEndpoint);
   networkInterface.use([{
     applyMiddleware(req, next) {
-      if (localStorage && localStorage.getItem(authTokenName)) {
+      if (__CLIENT__ && localStorage.getItem(authTokenName)) {
         if (!req.options.headers) {
           req.options.headers = {};
         }
@@ -14,10 +14,9 @@ export default () => {
       next();
     }
   }]);
-  const shouldBatch = !(__DEVELOPMENT__);
   return new ApolloClient({
     networkInterface,
-    shouldBatch,
+    shouldBatch: !__DEVELOPMENT__,
     formatError: (error) => `GQL Error: ${error}`,
     printErrors: (__DEVELOPMENT__)
   });

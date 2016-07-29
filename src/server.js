@@ -13,7 +13,8 @@ import { host, port, apiHost, apiPort } from './config';
 
 import { Html } from './shared/containers';
 import getRoutes from './shared/routes';
-import createStore from './shared/redux/create';
+import createStore from './shared/redux/store';
+import rootSaga from './shared/redux/sagas';
 import ApolloClient from './shared/helpers/ApolloClient';
 
 export const client = ApolloClient();
@@ -79,7 +80,7 @@ app.use((req, res) => {
     return;
   }
 
-  match({ history, routes, location: req.originalUrl }, (err, redirectLocation, renderProps) => {
+  match({ history, routes, location: req.originalUrl }, async (err, redirectLocation, renderProps) => {
     if (redirectLocation) {
       res.redirect(302, redirectLocation.pathname + redirectLocation.search);
     } else if (err) {
@@ -89,6 +90,7 @@ app.use((req, res) => {
     } else if (!renderProps) {
       res.status(404).send('Not found');
     } else {
+      await store.runSaga(rootSaga);
       res.status(200);
       const htmlStream =
         renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}

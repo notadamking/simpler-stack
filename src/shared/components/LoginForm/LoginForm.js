@@ -1,22 +1,13 @@
 import React, { Component, PropTypes } from 'react';
-import { Header, Divider, Form, Field, Segment, Icon,
-  Input, Button, Message } from 'react-semantify';
-import { connect } from 'react-apollo';
-import { isEmpty } from 'lodash';
+import { Header, Divider, Field, Segment, Icon, Input, Message } from 'react-semantify';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 
 import validateForm from '../../decorators/validateForm';
 import schema from './validate';
 import { loginUser } from '../../redux/modules/auth';
 
-@connect({
-  mapStateToProps: (state) => {
-    return {
-      submitError: state.auth.error,
-      authenticated: state.auth.authenticated
-    };
-  }
-})
+@connect()
 @validateForm({
   form: 'login',
   fields: [ 'email', 'password' ],
@@ -29,23 +20,16 @@ export default class LoginForm extends Component {
     handleSubmit: PropTypes.func.isRequired,
     submitError: PropTypes.string,
     authenticated: PropTypes.bool,
-    fields: PropTypes.object,
-    onSuccess: PropTypes.func
+    fields: PropTypes.object
   };
 
-  async onSubmit() {
-    const { dispatch, onSuccess, fields: { email, password } } = this.props;
-    await dispatch(loginUser(email.value, password.value));
-
-    // this.props.authenticated because dispatch changes state
-    if (this.props.authenticated && onSuccess) {
-      onSuccess();
-    }
+  onSubmit() {
+    const { dispatch, fields: { email, password } } = this.props;
+    dispatch(loginUser(email.value, password.value));
   }
 
   render() {
-    const { submitError, authenticated, handleSubmit, submitting, onSuccess,
-      fields: { email, password } } = this.props;
+    const { submitError, authenticated, handleSubmit, submitting, fields: { email, password } } = this.props;
 
     return (
       <Segment className="stacked">
@@ -56,7 +40,7 @@ export default class LoginForm extends Component {
         <Message className={classNames('error', { hidden: !submitError })}>
           <strong>Login failed.</strong> {submitError}
         </Message>
-        <Form className="padded large" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+        <form className="ui large padded form" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
           <Field className={classNames({
             error: email.touched && email.error
           })}>
@@ -73,9 +57,9 @@ export default class LoginForm extends Component {
               <Icon className="lock"/>
             </Input>
           </Field>
-          <Button className="fluid large teal submit" disabled={submitting} onClick={handleSubmit(this.onSubmit.bind(this))}>
+          <button type="submit" className="ui fluid large teal button" disabled={submitting}>
             Login
-          </Button>
+          </button>
           <Message className={classNames('error', {
             visible: (email.touched && email.error) || (password.touched && password.error)
           })}>
@@ -87,7 +71,7 @@ export default class LoginForm extends Component {
               {password.touched && password.error && <li>{password.error}</li>}
             </ul>
           </Message>
-        </Form>
+        </form>
       </Segment>
     );
   }

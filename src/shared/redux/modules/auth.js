@@ -1,24 +1,109 @@
-import gql from 'graphql-tag';
+import { takeEvery } from 'redux-saga';
+import { take, put, call, fork } from 'redux-saga/effects';
 import { head, isEmpty } from 'lodash';
 import { authTokenName } from '../../../config';
+import { currentUserQuery, loginUserQuery, signupUserQuery } from '../queries';
 
 export const CLEAR_ERRORS = 'auth/clear_errors';
+export const clearErrors = () => {
+  return {
+    type: CLEAR_ERRORS
+  };
+};
 
 export const OPEN_LOGIN_MODAL = 'auth/open_login_modal';
-export const CLOSE_LOGIN_MODAL = 'auth/close_login_modal';
+export const openLoginModal = () => {
+  return {
+    type: OPEN_LOGIN_MODAL
+  };
+};
+
 
 export const OPEN_SIGNUP_MODAL = 'auth/open_signup_modal';
-export const CLOSE_SIGNUP_MODAL = 'auth/close_signup_modal';
+export const openSignupModal = () => {
+  return {
+    type: OPEN_SIGNUP_MODAL
+  };
+};
+
+export const CLOSE_MODAL = 'auth/close_modal';
+export const closeModal = () => {
+  return {
+    type: CLOSE_MODAL
+  };
+};
+
+export const CHECK_TOKEN_REQUEST = 'auth/check_token_request';
+export const checkToken = () => {
+  return {
+    type: CHECK_TOKEN_REQUEST
+  };
+};
 
 export const LOGIN_REQUEST = 'auth/login_request';
+export const loginUser = (email, password) => {
+  return {
+    type: LOGIN_REQUEST,
+    payload: {
+      email,
+      password
+    }
+  };
+};
+
 export const LOGIN_SUCCESS = 'auth/login_success';
+export const loginSuccess = (user, authToken) => {
+  localStorage.setItem(authTokenName, authToken);
+  return {
+    type: LOGIN_SUCCESS,
+    user
+  };
+};
+
 export const LOGIN_FAILURE = 'auth/login_failure';
+export const loginFailure = (error) => {
+  return {
+    type: LOGIN_FAILURE,
+    error
+  };
+};
 
 export const SIGNUP_REQUEST = 'auth/signup_request';
+export const signupUser = (name, email, password) => {
+  return {
+    type: SIGNUP_REQUEST,
+    payload: {
+      name,
+      email,
+      password
+    }
+  };
+};
+
 export const SIGNUP_SUCCESS = 'auth/signup_success';
+export const signupSuccess = (user, authToken) => {
+  localStorage.setItem(authTokenName, authToken);
+  return {
+    type: SIGNUP_SUCCESS,
+    user
+  };
+};
+
 export const SIGNUP_FAILURE = 'auth/signup_failure';
+export const signupFailure = (error) => {
+  return {
+    type: SIGNUP_FAILURE,
+    error
+  };
+};
 
 export const LOGOUT = 'auth/logout';
+export const logout = () => {
+  localStorage.removeItem(authTokenName);
+  return {
+    type: LOGOUT
+  };
+};
 
 const initialState = {
   authenticated: false,
@@ -34,27 +119,28 @@ export default function reducer(state = initialState, action = {}) {
     case CLEAR_ERRORS:
       return {
         ...state,
-        error: null
+        error: undefined
       };
     case OPEN_SIGNUP_MODAL:
       return {
         ...state,
         shouldShowSignup: true
       };
-    case CLOSE_SIGNUP_MODAL:
-      return {
-        ...state,
-        shouldShowSignup: false
-      };
     case OPEN_LOGIN_MODAL:
       return {
         ...state,
         shouldShowLogin: true
       };
-    case CLOSE_LOGIN_MODAL:
+    case CLOSE_MODAL:
       return {
         ...state,
-        shouldShowLogin: false
+        shouldShowLogin: false,
+        shouldShowSignup: false
+      };
+    case CHECK_TOKEN_REQUEST:
+      return {
+        ...state,
+        authenticating: true
       };
     case SIGNUP_REQUEST:
       return {
@@ -67,14 +153,14 @@ export default function reducer(state = initialState, action = {}) {
         authenticated: true,
         authenticating: false,
         user: action.user,
-        error: null
+        error: undefined
       };
     case SIGNUP_FAILURE:
       return {
         ...state,
         authenticated: false,
         authenticating: false,
-        user: null,
+        user: undefined,
         error: action.error
       };
     case LOGIN_REQUEST:
@@ -88,145 +174,88 @@ export default function reducer(state = initialState, action = {}) {
         authenticated: true,
         authenticating: false,
         user: action.user,
-        error: null
+        error: undefined
       };
     case LOGIN_FAILURE:
       return {
         ...state,
         authenticated: false,
         authenticating: false,
-        user: null,
+        user: undefined,
         error: action.error
       };
     case LOGOUT:
       return {
         ...state,
         authenticated: false,
-        user: null
+        user: undefined
       };
     default:
       return state;
   }
 }
 
-export const clearErrors = () => (dispatch) => {
-  dispatch({ type: CLEAR_ERRORS });
-};
-
-export const openSignupModal = () => (dispatch) => {
-  dispatch({ type: OPEN_SIGNUP_MODAL });
-};
-
-export const closeSignupModal = () => (dispatch) => {
-  dispatch({ type: CLOSE_SIGNUP_MODAL });
-};
-
-export const openLoginModal = () => (dispatch) => {
-  dispatch({ type: OPEN_LOGIN_MODAL });
-};
-
-export const closeLoginModal = () => (dispatch) => {
-  dispatch({ type: CLOSE_LOGIN_MODAL });
-};
-
-export const checkAuth = () => async (dispatch) => {
-  const { client } = (__CLIENT__) ? require('../../../client') : require('../../../server');
-  dispatch({ type: LOGIN_REQUEST });
+function *checkTokenSaga() {
+  if (!__CLIENT__) { return; }
+  const { client } = require('../../../client');
 
   try {
-    const { data: { currentUser } } = await client.query({
-      query: gql`
-      query {
-        currentUser {
-          id
-          email
-        }
-      }
-      `
-    });
+    const { data: { currentUser } } = yield call(client.query, currentUserQuery());
+
     if (!isEmpty(currentUser)) {
-      dispatch({ type: LOGIN_SUCCESS, user: currentUser });
+      yield put(loginSuccess(currentUser));
     } else {
-      localStorage.removeItem(authTokenName);
-      dispatch({ type: LOGIN_FAILURE });
+      yield put(loginFailure());
     }
-  } catch (err) {
-    localStorage.removeItem(authTokenName);
-    dispatch({ type: LOGIN_FAILURE });
+  } catch (error) {
+    yield put(loginFailure(error));
   }
-};
+}
 
-export const logout = () => (dispatch) => {
-  localStorage.removeItem(authTokenName);
-  dispatch({ type: LOGOUT });
-};
-
-export const signupUser = (name, email, password) => async (dispatch) => {
-  const { client } = (__CLIENT__) ? require('../../../client') : require('../../../server');
-  dispatch({ type: SIGNUP_REQUEST });
+function *loginSaga(action) {
+  const { client } = __CLIENT__ ? require('../../../client') : require('../../../server');
+  const { email, password } = action.payload;
 
   try {
-    const { data: { createUser }, errors } = await client.mutate({
-      mutation: gql`
-        mutation User($name: String!, $email: Email!, $password: Password!) {
-          createUser(name: $name, email: $email, password: $password) {
-            user {
-              id
-              name
-              email
-            }
-            authToken
-          }
-        }
-      `,
-      variables: {
-        name,
-        email,
-        password
-      }
-    });
+    const { data: { loginUser: { user, authToken } } } = yield call(client.query, loginUserQuery(email, password));
+
+    yield put(loginSuccess(user, authToken));
+    yield put(closeModal());
+  } catch (error) {
+    yield put(loginFailure(head(error.graphQLErrors).message));
+  }
+}
+
+function *signupSaga(action) {
+  const { client } = __CLIENT__ ? require('../../../client') : require('../../../server');
+  const { name, email, password } = action.payload;
+
+  try {
+    const { data: { createUser }, errors } = yield call(client.mutate, signupUserQuery(name, email, password));
 
     if (!isEmpty(errors)) {
-      localStorage.removeItem(authTokenName);
-      dispatch({ type: SIGNUP_FAILURE, error: head(errors).message });
+      yield put(signupFailure(head(errors).message));
     } else {
       const { user, authToken } = createUser;
-      localStorage.setItem(authTokenName, authToken);
-      dispatch({ type: SIGNUP_SUCCESS, user });
+
+      yield put(signupSuccess(user, authToken));
+      yield put(closeModal());
     }
-  } catch (err) {
-    localStorage.removeItem(authTokenName);
-    dispatch({ type: SIGNUP_FAILURE, error: err });
+  } catch (error) {
+    yield put(signupFailure(head(error.graphQLErrors).message));
   }
-};
+}
 
-export const loginUser = (email, password) => async (dispatch) => {
-  const { client } = (__CLIENT__) ? require('../../../client') : require('../../../server');
-  dispatch({ type: LOGIN_REQUEST });
+function *closeModalSaga() {
+  yield put(clearErrors());
+  $('.dimmed').removeClass('dimmed');
+}
 
-  try {
-    const { data: { loginUser: { user, authToken } } } = await client.query({
-      query: gql`
-        query User($email: Email!, $password: Password!) {
-          loginUser(email: $email, password: $password) {
-            user {
-              id
-              email
-            }
-            authToken
-          }
-        }
-      `,
-      variables: {
-        email,
-        password
-      }
-    });
-
-    localStorage.setItem(authTokenName, authToken);
-    dispatch({ type: LOGIN_SUCCESS, user });
-  } catch (err) {
-    localStorage.removeItem(authTokenName);
-    dispatch({ type: LOGIN_FAILURE, error: head(err.graphQLErrors).message });
-  }
-};
+export function *watchAuth() {
+  yield [
+    takeEvery(CHECK_TOKEN_REQUEST, checkTokenSaga),
+    takeEvery(LOGIN_REQUEST, loginSaga),
+    takeEvery(SIGNUP_REQUEST, signupSaga),
+    takeEvery(CLOSE_MODAL, closeModalSaga)
+  ];
+}

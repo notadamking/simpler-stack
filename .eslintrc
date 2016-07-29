@@ -20,7 +20,7 @@
     "id-length": 0
   },
   "plugins": [
-    "react", "import"
+    "react", "import", "graphql"
   ],
   "settings": {
     "import/parser": "babel-eslint",

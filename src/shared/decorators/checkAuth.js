@@ -1,10 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-apollo';
-import { isEmpty } from 'lodash';
-import gql from 'graphql-tag';
-import { authTokenName } from '../../config';
-
-import { checkAuth } from '../redux/modules/auth';
+import { checkToken } from '../redux/modules/auth';
 
 @connect()
 export default () => ComposedComponent => class AuthenticatedComponent extends Component {
@@ -13,10 +9,10 @@ export default () => ComposedComponent => class AuthenticatedComponent extends C
   };
 
   render() {
-    this.props.dispatch(checkAuth());
+    this.props.dispatch(checkToken());
 
     return (
-      <ComposedComponent {...this.props}/>
+      <ComposedComponent />
     );
   }
 };

@@ -11,7 +11,8 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { StyleSheet } from 'aphrodite';
 import useScroll from 'scroll-behavior/lib/useStandardScroll';
 
-import createStore from './shared/redux/create';
+import createStore from './shared/redux/store';
+import rootSaga from './shared/redux/sagas';
 import getRoutes from './shared/routes';
 import ApolloClient from './shared/helpers/ApolloClient';
 
@@ -22,6 +23,8 @@ const _browserHistory = useScroll(() => browserHistory)();
 const store = createStore(_browserHistory, window.__data);
 const history = syncHistoryWithStore(_browserHistory, store);
 const routes = getRoutes(store);
+
+store.runSaga(rootSaga);
 
 global.socket = () => {
   const socket = io('', { path: '/ws' });

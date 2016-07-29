@@ -1,45 +1,32 @@
 import React, { Component, PropTypes } from 'react';
-import { Header, Divider, Form, Field, Segment, Icon,
-  Input, Button, Message } from 'react-semantify';
-import { connect } from 'react-apollo';
+import { Header, Divider, Field, Segment, Icon, Input, Message } from 'react-semantify';
+import { connect } from 'react-redux';
 import classNames from 'classnames';
 
+import { Modal } from '../';
 import validateForm from '../../decorators/validateForm';
 import schema from './validate';
-import { signupUser, clearErrors } from '../../redux/modules/auth';
+import { signupUser } from '../../redux/modules/auth';
 
-@connect({
-  mapStateToProps: (state) => {
-    return {
-      submitError: state.auth.error,
-      authenticated: state.auth.authenticated
-    };
-  }
-})
+@connect()
 @validateForm({
   form: 'signup',
   fields: [ 'name', 'email', 'password' ],
   schema
 })
-export default class LoginForm extends Component {
+export default class SignupForm extends Component {
   static propTypes = {
     submitting: PropTypes.bool,
     dispatch: PropTypes.func.isRequired,
     handleSubmit: PropTypes.func.isRequired,
     submitError: PropTypes.string,
     authenticated: PropTypes.bool,
-    fields: PropTypes.object,
-    onSuccess: PropTypes.func
+    fields: PropTypes.object
   };
 
-  async onSubmit() {
-    const { dispatch, onSuccess, fields: { name, email, password } } = this.props;
-    await dispatch(signupUser(name.value, email.value, password.value));
-
-    // this.props.authenticated because dispatch changes state
-    if (this.props.authenticated && onSuccess) {
-      onSuccess();
-    }
+  onSubmit() {
+    const { dispatch, fields: { name, email, password } } = this.props;
+    dispatch(signupUser(name.value, email.value, password.value));
   }
 
   render() {
@@ -55,7 +42,7 @@ export default class LoginForm extends Component {
         <Message className={classNames('error', { hidden: !submitError })}>
           <strong>Sign up failed.</strong> {submitError}
         </Message>
-        <Form className="padded large" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
+        <form className="ui large padded form" onSubmit={handleSubmit(this.onSubmit.bind(this))}>
           <Field className={classNames({
             error: name.touched && name.error
           })}>
@@ -80,9 +67,9 @@ export default class LoginForm extends Component {
               <Icon className="lock"/>
             </Input>
           </Field>
-          <Button className="fluid large teal submit" disabled={submitting} onClick={handleSubmit(this.onSubmit.bind(this))}>
+          <button type="submit" className="ui fluid large teal button" disabled={submitting}>
             Login
-          </Button>
+          </button>
           <Message className={classNames('error', {
             visible: (name.touched && name.error) || (email.touched && email.error) || (password.touched && password.error)
           })}>
@@ -95,7 +82,7 @@ export default class LoginForm extends Component {
               {password.touched && password.error && <li>{password.error}</li>}
             </ul>
           </Message>
-        </Form>
+        </form>
       </Segment>
     );
   }
