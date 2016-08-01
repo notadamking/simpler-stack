@@ -33,17 +33,21 @@ export const closeModal = () => {
 };
 
 export const CHECK_TOKEN_REQUEST = 'auth/check_token_request';
-export const checkToken = () => {
+export const checkToken = ({ client }) => {
   return {
-    type: CHECK_TOKEN_REQUEST
+    type: CHECK_TOKEN_REQUEST,
+    payload: {
+      client
+    }
   };
 };
 
 export const LOGIN_REQUEST = 'auth/login_request';
-export const loginUser = (email, password) => {
+export const loginUser = ({ client, email, password }) => {
   return {
     type: LOGIN_REQUEST,
     payload: {
+      client,
       email,
       password
     }
@@ -70,10 +74,11 @@ export const loginFailure = (error) => {
 };
 
 export const SIGNUP_REQUEST = 'auth/signup_request';
-export const signupUser = (name, email, password) => {
+export const signupUser = ({ client, name, email, password }) => {
   return {
     type: SIGNUP_REQUEST,
     payload: {
+      client,
       name,
       email,
       password
@@ -196,9 +201,9 @@ export default function reducer(state = initialState, action = {}) {
   }
 }
 
-function *checkTokenSaga() {
+function *checkTokenSaga(action) {
   if (!__CLIENT__) { return; }
-  const { client } = require('../../../client');
+  const { client } = action.payload;
 
   try {
     const { data: { currentUser } } = yield call(client.query, currentUserQuery());
@@ -214,8 +219,7 @@ function *checkTokenSaga() {
 }
 
 function *loginSaga(action) {
-  const { client } = __CLIENT__ ? require('../../../client') : require('../../../server');
-  const { email, password } = action.payload;
+  const { client, email, password } = action.payload;
 
   try {
     const { data: { loginUser: { user, authToken } } } = yield call(client.query, loginUserQuery(email, password));
@@ -228,8 +232,7 @@ function *loginSaga(action) {
 }
 
 function *signupSaga(action) {
-  const { client } = __CLIENT__ ? require('../../../client') : require('../../../server');
-  const { name, email, password } = action.payload;
+  const { client, name, email, password } = action.payload;
 
   try {
     const { data: { createUser }, errors } = yield call(client.mutate, signupUserQuery(name, email, password));

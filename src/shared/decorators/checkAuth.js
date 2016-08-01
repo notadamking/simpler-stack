@@ -8,8 +8,12 @@ export default () => ComposedComponent => class AuthenticatedComponent extends C
     dispatch: PropTypes.func.isRequired
   };
 
+  static contextTypes = {
+    client: PropTypes.object.isRequired
+  };
+
   render() {
-    this.props.dispatch(checkToken());
+    this.props.dispatch(checkToken({ client: this.context.client }));
 
     return (
       <ComposedComponent />

@@ -1,19 +1,19 @@
 require('babel-polyfill');
 
 // Webpack config for development
-var fs = require('fs');
-var path = require('path');
-var webpack = require('webpack');
-var assetsPath = path.resolve(__dirname, '../static/assets');
-var host = (process.env.HOST || 'localhost');
-var port = (+process.env.PORT + 1) || 3001;
+const fs = require('fs');
+const path = require('path');
+const webpack = require('webpack');
+const assetsPath = path.resolve(__dirname, '../static/assets');
+const host = (process.env.HOST || 'localhost');
+const port = (+process.env.PORT + 1) || 3001;
 
 // https://github.com/halt-hammerzeit/webpack-isomorphic-tools
-var WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
-var webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
+const WebpackIsomorphicToolsPlugin = require('webpack-isomorphic-tools/plugin');
+const webpackIsomorphicToolsPlugin = new WebpackIsomorphicToolsPlugin(require('./webpack-isomorphic-tools'));
 
-var babelrc = fs.readFileSync('./.babelrc');
-var babelrcObject = {};
+const babelrc = fs.readFileSync('./.babelrc');
+let babelrcObject = {};
 
 try {
   babelrcObject = JSON.parse(babelrc);
@@ -22,14 +22,13 @@ try {
   console.error(err);
 }
 
-
-var babelrcObjectDevelopment = babelrcObject.env && babelrcObject.env.development || {};
+const babelrcObjectDevelopment = babelrcObject.env && babelrcObject.env.development || {};
 
 // merge global and dev-only plugins
-var combinedPlugins = babelrcObject.plugins || [];
+let combinedPlugins = babelrcObject.plugins || [];
 combinedPlugins = combinedPlugins.concat(babelrcObjectDevelopment.plugins);
 
-var babelLoaderQuery = Object.assign({}, babelrcObjectDevelopment, babelrcObject, {plugins: combinedPlugins});
+let babelLoaderQuery = Object.assign({}, babelrcObjectDevelopment, babelrcObject, {plugins: combinedPlugins});
 delete babelLoaderQuery.env;
 
 // Since we use .babelrc for client and server, and we don't want HMR enabled on the server, we have to add
@@ -37,9 +36,9 @@ delete babelLoaderQuery.env;
 
 // make sure react-transform is enabled
 babelLoaderQuery.plugins = babelLoaderQuery.plugins || [];
-var reactTransform = null;
-for (var i = 0; i < babelLoaderQuery.plugins.length; ++i) {
-  var plugin = babelLoaderQuery.plugins[i];
+let reactTransform = null;
+for (let i = 0; i < babelLoaderQuery.plugins.length; ++i) {
+  const plugin = babelLoaderQuery.plugins[i];
   if (Array.isArray(plugin) && plugin[0] === 'react-transform') {
     reactTransform = plugin;
   }

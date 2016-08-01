@@ -17,7 +17,7 @@ import createStore from './shared/redux/store';
 import rootSaga from './shared/redux/sagas';
 import ApolloClient from './shared/utils/ApolloClient';
 
-export const client = ApolloClient();
+const client = ApolloClient();
 const targetUrl = `http://${apiHost}:${apiPort}`;
 const pretty = new PrettyError();
 const app = new Express();
@@ -66,7 +66,7 @@ app.use((req, res) => {
     webpackIsomorphicTools.refresh();
   }
   const memoryHistory = createMemoryHistory(req.originalUrl);
-  const store = createStore(memoryHistory);
+  const store = createStore(memoryHistory, client);
   const history = syncHistoryWithStore(memoryHistory, store);
   const routes = getRoutes(store);
 

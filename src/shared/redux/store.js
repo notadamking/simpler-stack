@@ -10,12 +10,11 @@ const loggerMiddleware = createLogger({
   collapsed: true
 });
 
-export default (history, initialState) => {
+export default (history, client, initialState) => {
   // Sync dispatched route actions to the history
   const reduxRouterMiddleware = routerMiddleware(history);
   const sagaMiddleware = createSagaMiddleware();
 
-  const client = (__CLIENT__) ? require('../../client').client : require('../../server').client;
   let middleware = [ sagaMiddleware, reduxRouterMiddleware, client.middleware() ];
 
   let finalCreateStore;
@@ -37,8 +36,8 @@ export default (history, initialState) => {
   const store = finalCreateStore(createReducers(client), initialState);
 
   if (__DEVELOPMENT__ && module.hot) {
-    module.hot.accept('../../client', () => {
-      store.replaceReducer(createReducers(require('../../client').client));
+    module.hot.accept('./reducers', () => {
+      store.replaceReducer(createReducers(client));
     });
   }
 

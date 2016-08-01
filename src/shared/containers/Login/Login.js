@@ -23,14 +23,18 @@ export default class Login extends Component {
   static propTypes = {
     submitting: PropTypes.bool.isRequired,
     handleSubmit: PropTypes.func.isRequired,
-    submitError: PropTypes.string.isRequired,
+    submitError: PropTypes.string,
     authenticated: PropTypes.bool.isRequired,
     dispatch: PropTypes.func.isRequired,
     fields: PropTypes.object.isRequired
   };
 
+  static contextTypes = {
+    client: PropTypes.object.isRequired
+  };
+
   onFormSubmit({ email, password }) {
-    this.props.dispatch(loginUser(email, password));
+    this.props.dispatch(loginUser({ client: this.context.client, email, password }));
   }
 
   render() {

@@ -10,7 +10,8 @@ export default class Modal extends Component {
   };
 
   static contextTypes = {
-    store: PropTypes.object.isRequired
+    store: PropTypes.object.isRequired,
+    client: PropTypes.object.isRequired
   };
 
   static defaultProps = {
@@ -30,10 +31,8 @@ export default class Modal extends Component {
   }
 
   _render() {
-    const { client } = (__CLIENT__) ? require('../../../client') : require('../../../server');
-
     ReactDOM.render(
-      <ApolloProvider store={this.context.store} client={client}>
+      <ApolloProvider store={this.context.store} client={this.context.client}>
         <div>{this.props.children}</div>
       </ApolloProvider>,
       this.modalTarget
