@@ -6,7 +6,7 @@ export default class Modal extends Component {
   static propTypes = {
     children: PropTypes.object,
     onHide: PropTypes.func,
-    modalClasses: PropTypes.string
+    classNames: PropTypes.string
   };
 
   static contextTypes = {
@@ -19,7 +19,7 @@ export default class Modal extends Component {
 
   componentDidMount() {
     this.modalTarget = document.createElement('div');
-    this.modalTarget.className = `ui modal ${this.props.modalClasses}`;
+    this.modalTarget.className = `ui modal ${this.props.classNames}`;
     document.body.appendChild(this.modalTarget);
     this._render();
   }

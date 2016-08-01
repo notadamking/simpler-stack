@@ -30,15 +30,16 @@ export default class Header extends Component {
     shouldShowSignup: PropTypes.bool,
     openLoginModal: PropTypes.func.isRequired,
     openSignupModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired
   };
 
   render() {
-    const { openLoginModal, openSignupModal, logout, data, user,
+    const { openLoginModal, openSignupModal, closeModal, logout, data, user,
       shouldShowLogin, shouldShowSignup } = this.props;
     return (
-      <NavBar openLoginModal={openLoginModal} openSignupModal={openSignupModal} logout={logout}
-        user={user} data={data} shouldShowLogin={shouldShowLogin} shouldShowSignup={shouldShowSignup} />
+      <NavBar openLoginModal={openLoginModal} openSignupModal={openSignupModal} closeModal={closeModal}
+        logout={logout} user={user} data={data} shouldShowLogin={shouldShowLogin} shouldShowSignup={shouldShowSignup} />
     );
   }
 }

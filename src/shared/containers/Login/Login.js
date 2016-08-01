@@ -1,8 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-apollo';
 
-import { Modal, LoginForm } from '../../components';
-import { closeModal, loginUser } from '../../redux/modules/auth';
+import validateForm from '../../decorators/validateForm';
+import schema from './validate';
+import { LoginForm } from '../../components';
+import { loginUser } from '../../redux/modules/auth';
 
 @connect({
   mapStateToProps: (state) => {
@@ -12,11 +14,19 @@ import { closeModal, loginUser } from '../../redux/modules/auth';
     };
   }
 })
+@validateForm({
+  form: 'login',
+  fields: [ 'email', 'password' ],
+  schema
+})
 export default class Login extends Component {
   static propTypes = {
-    submitError: PropTypes.string,
-    authenticated: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired
+    submitting: PropTypes.bool.isRequired,
+    handleSubmit: PropTypes.func.isRequired,
+    submitError: PropTypes.string.isRequired,
+    authenticated: PropTypes.bool.isRequired,
+    dispatch: PropTypes.func.isRequired,
+    fields: PropTypes.object.isRequired
   };
 
   onFormSubmit({ email, password }) {
@@ -24,11 +34,10 @@ export default class Login extends Component {
   }
 
   render() {
-    const { submitError, authenticated } = this.props;
+    const { submitError, authenticated, fields, submitting, handleSubmit } = this.props;
     return (
-      <Modal onHide={closeModal} modalClasses="small">
-        <LoginForm onFormSubmit={this.onFormSubmit} submitError={submitError} authenticated={authenticated} />
-      </Modal>
+      <LoginForm fields={fields} submitError={submitError} authenticated={authenticated}
+        submitting={submitting} handleSubmit={handleSubmit(this.onFormSubmit.bind(this))} />
     );
   }
 }

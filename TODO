@@ -1,0 +1,13 @@
+TODO:
+☐ Add unit testing
+☐ Migrate from react-semantify to stardust
+☐ Clean up wepack.config.js
+
+
+TESTING:
+✔ Figure out a way to move redux form out of components to containers @done(2016-08-01 08:52)
+  ✔ Move modal back to header @done(2016-08-01 08:45)
+  ✔ Email/password error props @done(2016-08-01 08:52)
+✔ Hopefully this makes components stateless and will allow us to shallow render @done(2016-08-01 09:19)
+☐ As for stateful containers, we can possibly use a global describe in tests.webpack.js
+  to preload an ApolloProvider to mount all other containers to.

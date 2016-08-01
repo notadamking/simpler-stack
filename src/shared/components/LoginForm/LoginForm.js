@@ -2,28 +2,25 @@ import React, { Component, PropTypes } from 'react';
 import { Header, Divider, Field, Segment, Icon, Input, Message } from 'react-semantify';
 import classNames from 'classnames';
 
-import validateForm from '../../decorators/validateForm';
-import schema from './validate';
-import { loginUser } from '../../redux/modules/auth';
-
-@validateForm({
-  form: 'login',
-  fields: [ 'email', 'password' ],
-  schema
-})
 export default class LoginForm extends Component {
   static propTypes = {
     submitting: PropTypes.bool,
-    dispatch: PropTypes.func.isRequired,
-    handleSubmit: PropTypes.func.isRequired,
-    onFormSubmit: PropTypes.func.isRequired,
+    handleSubmit: PropTypes.func,
     submitError: PropTypes.string,
     authenticated: PropTypes.bool,
     fields: PropTypes.object
   };
 
+  static defaultProps = {
+    submitting: false,
+    handleSubmit: () => false,
+    submitError: undefined,
+    authenticated: false,
+    fields: { email: {}, password: {}}
+  };
+
   render() {
-    const { onFormSubmit, submitError, authenticated, handleSubmit, submitting,
+    const { submitError, authenticated, handleSubmit, submitting,
       fields: { email, password } } = this.props;
 
     return (
@@ -35,7 +32,7 @@ export default class LoginForm extends Component {
         <Message className={classNames('error', { hidden: !submitError })}>
           <strong>Login failed.</strong> {submitError}
         </Message>
-        <form className="ui large padded form" onSubmit={handleSubmit(onFormSubmit.bind(this))}>
+        <form className="ui large padded form" onSubmit={handleSubmit}>
           <Field className={classNames({
             error: email.touched && email.error
           })}>

@@ -52,7 +52,9 @@ export const loginUser = (email, password) => {
 
 export const LOGIN_SUCCESS = 'auth/login_success';
 export const loginSuccess = (user, authToken) => {
-  localStorage.setItem(authTokenName, authToken);
+  if (!isEmpty(authToken)) {
+    localStorage.setItem(authTokenName, authToken);
+  }
   return {
     type: LOGIN_SUCCESS,
     user

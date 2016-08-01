@@ -2,27 +2,33 @@ import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Label } from 'react-semantify';
 import { isEmpty } from 'lodash';
 
+import { Modal } from '../';
 import { Login, Signup } from '../../containers';
 
 export default class NavBar extends Component {
   static propTypes = {
     user: PropTypes.object,
     data: PropTypes.object,
-    shouldShowLogin: PropTypes.bool,
-    shouldShowSignup: PropTypes.bool,
+    shouldShowLogin: PropTypes.bool.isRequired,
+    shouldShowSignup: PropTypes.bool.isRequired,
     openLoginModal: PropTypes.func.isRequired,
     openSignupModal: PropTypes.func.isRequired,
+    closeModal: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired
   };
 
   static defaultProps = {
     shouldShowLogin: false,
-    shouldShowSignup: false
+    shouldShowSignup: false,
+    openLoginModal: () => false,
+    openSignupModal: () => false,
+    closeModal: () => false,
+    logout: () => false,
   };
 
   render() {
     const { data, user, shouldShowLogin, shouldShowSignup,
-      openLoginModal, openSignupModal, logout } = this.props;
+      openLoginModal, openSignupModal, closeModal, logout } = this.props;
 
     return (
       <nav>
@@ -56,11 +62,19 @@ export default class NavBar extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> {!isEmpty(data.users) && data.users.length}
+            <Icon className="users" /> {!isEmpty(data) && !isEmpty(data.users) && data.users.length}
           </Label>
         </Container>
-        {shouldShowLogin && <Login />}
-        {shouldShowSignup && <Signup />}
+        {shouldShowLogin && (
+          <Modal onHide={closeModal} classNames="small">
+            <Login />
+          </Modal>
+        )}
+        {shouldShowSignup && (
+          <Modal onHide={closeModal} classNames="small">
+            <Signup />
+          </Modal>
+        )}
       </nav>
     );
   }
