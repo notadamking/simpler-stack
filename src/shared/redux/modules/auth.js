@@ -2,7 +2,7 @@ import { takeEvery } from 'redux-saga';
 import { take, put, call, fork } from 'redux-saga/effects';
 import { head, isEmpty } from 'lodash';
 import { authTokenName } from '../../../config';
-import { currentUserQuery, loginUserQuery, signupUserQuery } from '../queries';
+import { currentUserQuery, loginUserQuery, signupUserQuery } from '../../utils/queries';
 
 export const CLEAR_ERRORS = 'auth/clear_errors';
 export const clearErrors = () => {
@@ -17,7 +17,6 @@ export const openLoginModal = () => {
     type: OPEN_LOGIN_MODAL
   };
 };
-
 
 export const OPEN_SIGNUP_MODAL = 'auth/open_signup_modal';
 export const openSignupModal = () => {
@@ -242,6 +241,7 @@ function *signupSaga(action) {
       yield put(closeModal());
     }
   } catch (error) {
+    console.log('e: ', error);
     yield put(signupFailure(head(error.graphQLErrors).message));
   }
 }

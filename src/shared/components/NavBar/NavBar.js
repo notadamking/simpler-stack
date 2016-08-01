@@ -1,12 +1,9 @@
 import React, { Component, PropTypes } from 'react';
-import { connect } from 'react-redux';
 import { Menu, Item, Icon, Container, Label } from 'react-semantify';
 import { isEmpty } from 'lodash';
 
-import * as actions from '../../redux/modules/auth';
 import { Login, Signup } from '../../containers';
 
-@connect(null, actions)
 export default class NavBar extends Component {
   static propTypes = {
     user: PropTypes.object,
@@ -15,7 +12,7 @@ export default class NavBar extends Component {
     shouldShowSignup: PropTypes.bool,
     openLoginModal: PropTypes.func.isRequired,
     openSignupModal: PropTypes.func.isRequired,
-    logout: PropTypes.func.isRequired,
+    logout: PropTypes.func.isRequired
   };
 
   static defaultProps = {

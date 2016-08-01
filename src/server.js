@@ -15,7 +15,7 @@ import { Html } from './shared/containers';
 import getRoutes from './shared/routes';
 import createStore from './shared/redux/store';
 import rootSaga from './shared/redux/sagas';
-import ApolloClient from './shared/helpers/ApolloClient';
+import ApolloClient from './shared/utils/ApolloClient';
 
 export const client = ApolloClient();
 const targetUrl = `http://${apiHost}:${apiPort}`;

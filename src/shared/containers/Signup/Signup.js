@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-apollo';
 
 import { Modal, SignupForm } from '../../components';
-import { closeModal } from '../../redux/modules/auth';
+import { closeModal, signupUser } from '../../redux/modules/auth';
 
 @connect({
   mapStateToProps: (state) => {
@@ -15,14 +15,19 @@ import { closeModal } from '../../redux/modules/auth';
 export default class Signup extends Component {
   static propTypes = {
     submitError: PropTypes.string,
-    authenticated: PropTypes.bool
+    authenticated: PropTypes.bool,
+    dispatch: PropTypes.func.isRequired
   };
+
+  onFormSubmit({ name, email, password }) {
+    this.props.dispatch(signupUser(name, email, password));
+  }
 
   render() {
     const { submitError, authenticated } = this.props;
     return (
       <Modal onHide={closeModal} modalClasses="small">
-        <SignupForm submitError={submitError} authenticated={authenticated} />
+        <SignupForm onFormSubmit={this.onFormSubmit} submitError={submitError} authenticated={authenticated} />
       </Modal>
     );
   }

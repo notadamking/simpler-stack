@@ -14,7 +14,7 @@ import useScroll from 'scroll-behavior/lib/useStandardScroll';
 import createStore from './shared/redux/store';
 import rootSaga from './shared/redux/sagas';
 import getRoutes from './shared/routes';
-import ApolloClient from './shared/helpers/ApolloClient';
+import ApolloClient from './shared/utils/ApolloClient';
 
 const dest = document.getElementById('content');
 
