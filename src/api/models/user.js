@@ -21,6 +21,7 @@ User.define('signJwt', function signJwt() {
 });
 
 User.defineStatic('fromToken', async function fromToken(token) {
+  if (!token) { throw new Error('No token was given.'); }
   const { id } = await verifyJwt(token, secretKey);
   return await User.get(id);
 });

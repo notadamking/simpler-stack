@@ -4,7 +4,7 @@ import { expect } from 'chai';
 
 import SignupForm from './SignupForm';
 
-describe('<SignupForm />', () => {
+describe('Component::SignupForm', () => {
   it('contains a form element', () => {
     expect(shallow(<SignupForm />).find('form')).to.have.length(1);
   });

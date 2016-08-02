@@ -5,7 +5,7 @@ import { expect } from 'chai';
 import NavBar from './NavBar';
 import { Modal } from '../';
 
-describe('<NavBar />', () => {
+describe('Component::NavBar', () => {
   it('contains a nav element', () => {
     expect(shallow(<NavBar />).find('nav')).to.have.length(1);
   });

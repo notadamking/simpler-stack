@@ -6,7 +6,7 @@ import gql from 'graphql-tag';
 import checkAuth from '../../decorators/checkAuth';
 import { getUsersQuery } from '../../utils/queries';
 import { NavBar } from '../../components';
-import * as actions from '../../redux/modules/auth';
+import * as actions from '../../redux/actions/auth';
 
 @checkAuth()
 @connect({

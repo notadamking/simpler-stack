@@ -6,10 +6,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import io from 'socket.io-client';
 import { ApolloProvider } from 'react-apollo';
-import { Router, browserHistory } from 'react-router';
+import { Router, browserHistory as routerHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
 import { StyleSheet } from 'aphrodite';
-import useScroll from 'scroll-behavior/lib/useStandardScroll';
+import withScroll from 'scroll-behavior';
 
 import createStore from './shared/redux/store';
 import rootSaga from './shared/redux/sagas';
@@ -19,9 +19,9 @@ import ApolloClient from './shared/utils/ApolloClient';
 const dest = document.getElementById('content');
 
 const client = ApolloClient();
-const _browserHistory = useScroll(() => browserHistory)();
-const store = createStore(_browserHistory, client, window.__data);
-const history = syncHistoryWithStore(_browserHistory, store);
+const browserHistory = withScroll(routerHistory);
+const store = createStore(browserHistory, client, window.__data);
+const history = syncHistoryWithStore(browserHistory, store);
 const routes = getRoutes(store);
 
 store.runSaga(rootSaga);

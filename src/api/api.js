@@ -3,7 +3,7 @@ import { apolloServer } from 'apollo-server';
 import http from 'http';
 import SocketIO from 'socket.io';
 
-import { apiHost, apiPort, secretKey as secret } from '../config';
+import { apiHost, apiPort } from '../config';
 import { schema, resolvers } from './graphql/schema';
 import { User } from './models';
 
@@ -12,26 +12,15 @@ const server = http.Server(app);
 const io = new SocketIO(server);
 io.path('/ws');
 
-app.use('/graphql', apolloServer(async (req) => {
-  const authToken = req.headers.authorization;
-
-  let opts = {
-    schema,
-    resolvers,
-    graphiql: true,
-    pretty: true
-  };
-  if (authToken && authToken !== '') {
-    const user = await User.fromToken(authToken);
-    opts = {
-      ...opts,
-      context: {
-        user
-      }
-    };
+app.use('/graphql', apolloServer(async (req) => ({
+  schema,
+  resolvers,
+  graphiql: true,
+  pretty: true,
+  context: {
+    user: await User.fromToken(req.headers.authorization).catch(() => {})
   }
-  return opts;
-}));
+})));
 
 const bufferSize = 100;
 const messageBuffer = new Array(bufferSize);

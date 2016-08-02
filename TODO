@@ -1,7 +1,8 @@
 TODO:
-☐ Migrate from react-semantify to stardust
 ✔ Clean up wepack.config.js @done(2016-08-01 17:27)
 ✔ Remove exports of ApolloClient instance @done(2016-08-01 10:53)
+☐ Extract UI state from auth state
+
 
 TESTING:
 Add unit testing

@@ -3,7 +3,6 @@ const webpack = require('webpack');
 module.exports = function (config) {
   config.set({
 
-    // browsers: ['PhantomJS'],
     browsers: ['Chrome'],
 
     singleRun: false,
@@ -11,7 +10,6 @@ module.exports = function (config) {
     frameworks: [ 'mocha' ],
 
     files: [
-      './node_modules/phantomjs-polyfill/bind-polyfill.js',
       'tests.webpack.js'
     ],
 
@@ -26,7 +24,6 @@ module.exports = function (config) {
       require("karma-mocha"),
       require("karma-mocha-reporter"),
       require("karma-chrome-launcher"),
-      // require("karma-phantomjs-launcher"),
       require("karma-sourcemap-loader")
     ],
 

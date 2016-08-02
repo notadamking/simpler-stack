@@ -39,7 +39,7 @@ export default class NavBar extends Component {
           <Item type="link">
             <Icon className="chat" /> chat
           </Item>
-          {isEmpty(user) && (
+          {isEmpty(user) ? (
             <div className="right menu">
               <Item type="link" onClick={openSignupModal}>
                 <Icon className="checkmark box" /> sign up
@@ -48,8 +48,7 @@ export default class NavBar extends Component {
                 <Icon className="sign in" /> sign in
               </Item>
             </div>
-          )}
-          {!isEmpty(user) && (
+          ) : (
             <div className="right menu">
               <Item type="link">
                 <Icon className="user" /> profile ({user.email})

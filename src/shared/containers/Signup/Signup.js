@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-apollo';
 
 import { SignupForm } from '../../components';
-import { signupUser } from '../../redux/modules/auth';
+import { signupUser } from '../../redux/actions/auth';
 import validateForm from '../../decorators/validateForm';
 import schema from './validate';
 

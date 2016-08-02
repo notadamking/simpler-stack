@@ -4,7 +4,7 @@ import { connect } from 'react-apollo';
 import validateForm from '../../decorators/validateForm';
 import schema from './validate';
 import { LoginForm } from '../../components';
-import { loginUser } from '../../redux/modules/auth';
+import { loginUser } from '../../redux/actions/auth';
 
 @connect({
   mapStateToProps: (state) => {
