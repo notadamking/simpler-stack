@@ -1,6 +1,5 @@
 import { takeLatest } from 'redux-saga';
 import { take, put, call, fork } from 'redux-saga/effects';
-import { head } from 'lodash';
 import { currentUserQuery, loginUserQuery, signupUserQuery } from '../../utils/queries';
 import * as actions from '../actions/auth';
 import * as modalActions from '../actions/ui/modals';
@@ -26,8 +25,9 @@ export function *loginSaga(action) {
     const { data: { loginUser: { user, authToken } } } = yield call(client.query, loginUserQuery({ email, password }));
     yield put(actions.loginSuccess({ user, authToken }));
     yield put(modalActions.closeModals());
-  } catch (error) {
-    yield put(actions.loginFailure({ error: head(error.graphQLErrors).message }));
+  } catch (err) {
+    const [ error ] = err.graphQLErrors;
+    yield put(actions.loginFailure({ error }));
   }
 }
 
@@ -36,15 +36,17 @@ export function *signupSaga(action) {
   try {
     const { data: { createUser }, errors } = yield call(client.mutate, signupUserQuery({ name, email, password }));
     if (errors) {
-      yield put(actions.signupFailure({ error: head(errors).message }));
+      const [ error ] = errors;
+      yield put(actions.signupFailure({ error }));
     } else {
       const { user, authToken } = createUser;
 
       yield put(actions.signupSuccess({ user, authToken }));
       yield put(modalActions.closeModals());
     }
-  } catch (error) {
-    yield put(actions.signupFailure({ error: head(error.graphQLErrors).message }));
+  } catch (err) {
+    const [ error ] = err.graphQLErrors;
+    yield put(actions.signupFailure({ error }));
   }
 }
 

@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Label } from 'react-semantify';
-import { isEmpty } from 'lodash';
 
 import { Modal } from '../';
 import { Login, Signup } from '../../containers';
@@ -39,7 +38,7 @@ export default class NavBar extends Component {
           <Item type="link">
             <Icon className="chat" /> chat
           </Item>
-          {isEmpty(user) ? (
+          {!user ? (
             <div className="right menu">
               <Item type="link" onClick={openSignupModal}>
                 <Icon className="checkmark box" /> sign up
@@ -61,7 +60,7 @@ export default class NavBar extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> {!isEmpty(data) && !isEmpty(data.users) && data.users.length}
+            <Icon className="users" /> {data && data.users && data.users.length}
           </Label>
         </Container>
         {shouldShowLogin && (

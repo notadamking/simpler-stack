@@ -64,7 +64,7 @@ export const loginFailure = ({ error }) => {
   return {
     type: LOGIN_FAILURE,
     payload: {
-      error
+      error: error.message
     }
   };
 };
@@ -100,7 +100,7 @@ export const signupFailure = ({ error }) => {
   return {
     type: SIGNUP_FAILURE,
     payload: {
-      error
+      error: error.message
     }
   };
 };
