@@ -13,7 +13,7 @@ export default class NavBar extends Component {
     shouldShowSignup: PropTypes.bool.isRequired,
     openLoginModal: PropTypes.func.isRequired,
     openSignupModal: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired,
+    closeModals: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired
   };
 
@@ -22,13 +22,13 @@ export default class NavBar extends Component {
     shouldShowSignup: false,
     openLoginModal: () => false,
     openSignupModal: () => false,
-    closeModal: () => false,
+    closeModals: () => false,
     logout: () => false,
   };
 
   render() {
     const { data, user, shouldShowLogin, shouldShowSignup,
-      openLoginModal, openSignupModal, closeModal, logout } = this.props;
+      openLoginModal, openSignupModal, closeModals, logout } = this.props;
 
     return (
       <nav>
@@ -65,12 +65,12 @@ export default class NavBar extends Component {
           </Label>
         </Container>
         {shouldShowLogin && (
-          <Modal onHide={closeModal} classNames="small">
+          <Modal onHide={closeModals} classNames="small">
             <Login />
           </Modal>
         )}
         {shouldShowSignup && (
-          <Modal onHide={closeModal} classNames="small">
+          <Modal onHide={closeModals} classNames="small">
             <Signup />
           </Modal>
         )}

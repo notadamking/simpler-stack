@@ -1,34 +1,13 @@
 import { authTokenName } from '../../../config';
 
-export const CLEAR_AUTH_ERRORS = 'auth/CLEAR_AUTH_ERRORS';
+export const CLEAR_AUTH_ERRORS = 'AUTH/CLEAR_AUTH_ERRORS';
 export const clearErrors = () => {
   return {
     type: CLEAR_AUTH_ERRORS
   };
 };
 
-export const OPEN_LOGIN_MODAL = 'auth/open_login_modal';
-export const openLoginModal = () => {
-  return {
-    type: OPEN_LOGIN_MODAL
-  };
-};
-
-export const OPEN_SIGNUP_MODAL = 'auth/open_signup_modal';
-export const openSignupModal = () => {
-  return {
-    type: OPEN_SIGNUP_MODAL
-  };
-};
-
-export const CLOSE_MODAL = 'auth/close_modal';
-export const closeModal = () => {
-  return {
-    type: CLOSE_MODAL
-  };
-};
-
-export const CHECK_TOKEN_REQUEST = 'auth/check_token_request';
+export const CHECK_TOKEN_REQUEST = 'AUTH/CHECK_TOKEN_REQUEST';
 export const checkToken = ({ client }) => {
   return {
     type: CHECK_TOKEN_REQUEST,
@@ -38,7 +17,24 @@ export const checkToken = ({ client }) => {
   };
 };
 
-export const LOGIN_REQUEST = 'auth/login_request';
+export const CHECK_TOKEN_SUCCESS = 'AUTH/CHECK_TOKEN_SUCCESS';
+export const tokenSuccess = ({ user }) => {
+  return {
+    type: CHECK_TOKEN_SUCCESS,
+    payload: {
+      user
+    }
+  };
+};
+
+export const CHECK_TOKEN_FAILURE = 'AUTH/CHECK_TOKEN_FAILURE';
+export const tokenFailure = () => {
+  return {
+    type: CHECK_TOKEN_FAILURE
+  };
+};
+
+export const LOGIN_REQUEST = 'AUTH/LOGIN_REQUEST';
 export const loginUser = ({ client, email, password }) => {
   return {
     type: LOGIN_REQUEST,
@@ -50,7 +46,7 @@ export const loginUser = ({ client, email, password }) => {
   };
 };
 
-export const LOGIN_SUCCESS = 'auth/login_success';
+export const LOGIN_SUCCESS = 'AUTH/LOGIN_SUCCESS';
 export const loginSuccess = ({ user, authToken }) => {
   if (global.localStorage && authToken) {
     localStorage.setItem(authTokenName, authToken);
@@ -63,7 +59,7 @@ export const loginSuccess = ({ user, authToken }) => {
   };
 };
 
-export const LOGIN_FAILURE = 'auth/login_failure';
+export const LOGIN_FAILURE = 'AUTH/LOGIN_FAILURE';
 export const loginFailure = ({ error }) => {
   return {
     type: LOGIN_FAILURE,
@@ -73,7 +69,7 @@ export const loginFailure = ({ error }) => {
   };
 };
 
-export const SIGNUP_REQUEST = 'auth/signup_request';
+export const SIGNUP_REQUEST = 'AUTH/SIGNUP_REQUEST';
 export const signupUser = ({ client, name, email, password }) => {
   return {
     type: SIGNUP_REQUEST,
@@ -86,7 +82,7 @@ export const signupUser = ({ client, name, email, password }) => {
   };
 };
 
-export const SIGNUP_SUCCESS = 'auth/signup_success';
+export const SIGNUP_SUCCESS = 'AUTH/SIGNUP_SUCCESS';
 export const signupSuccess = ({ user, authToken }) => {
   if (global.localStorage) {
     localStorage.setItem(authTokenName, authToken);
@@ -99,7 +95,7 @@ export const signupSuccess = ({ user, authToken }) => {
   };
 };
 
-export const SIGNUP_FAILURE = 'auth/signup_failure';
+export const SIGNUP_FAILURE = 'AUTH/SIGNUP_FAILURE';
 export const signupFailure = ({ error }) => {
   return {
     type: SIGNUP_FAILURE,
@@ -109,7 +105,7 @@ export const signupFailure = ({ error }) => {
   };
 };
 
-export const LOGOUT = 'auth/logout';
+export const LOGOUT = 'AUTH/LOGOUT';
 export const logout = () => {
   if (global.localStorage) {
     localStorage.removeItem(authTokenName);

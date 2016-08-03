@@ -27,9 +27,6 @@ const signupAction = {
   type: types.SIGNUP_REQUEST,
   payload: { client, ...fakeUser }
 };
-const closeModalAction = {
-  type: types.CLOSE_MODAL
-};
 
 describe('Sagas::watchAuth', () => {
   let iterator;
@@ -39,12 +36,11 @@ describe('Sagas::watchAuth', () => {
     iterator = sagas.watchAuth();
   });
 
-  it('starts checkTokenSaga, loginSaga, signupSaga, and closeModalSaga', () => {
+  it('starts checkTokenSaga, loginSaga, signupSaga', () => {
     expectedYield = [
       call(takeLatest, types.CHECK_TOKEN_REQUEST, sagas.checkTokenSaga),
       call(takeLatest, types.LOGIN_REQUEST, sagas.loginSaga),
-      call(takeLatest, types.SIGNUP_REQUEST, sagas.signupSaga),
-      call(takeEvery, types.CLOSE_MODAL, sagas.closeModalSaga)
+      call(takeLatest, types.SIGNUP_REQUEST, sagas.signupSaga)
     ];
     actualYield = iterator.next().value;
     expect(actualYield).to.eql(expectedYield);
@@ -60,11 +56,6 @@ describe('Sagas::watchAuth', () => {
       actualYield = iterator.next().value;
       expect(actualYield).to.eql(expectedYield);
     });
-
-    it('then puts LOGIN_FAILURE action to dispatch', () => {
-      actualYield = iterator.next().value;
-      expect(actualYield).to.have.deep.property('PUT.action.type', types.LOGIN_FAILURE);
-    });
   });
 
   describe('Saga::signupUserSaga', () => {
@@ -74,18 +65,8 @@ describe('Sagas::watchAuth', () => {
 
     it('calls signupUser mutation', () => {
       expectedYield = call(signupAction.payload.client.mutate, queries.signupUserQuery(fakeUser));
-      actualYield = iterator.next({ user: fakeUser }).value;
+      actualYield = iterator.next().value;
       expect(actualYield).to.eql(expectedYield);
-    });
-
-    it('then puts SIGNUP_SUCCESS action to dispatch', () => {
-      actualYield = iterator.next().value;
-      expect(actualYield).to.have.deep.property('PUT.action.type', types.SIGNUP_SUCCESS);
-    });
-
-    it('then puts CLOSE_MODAL action to dispatch', () => {
-      actualYield = iterator.next().value;
-      expect(actualYield).to.have.deep.property('PUT.action.type', types.CLOSE_MODAL);
     });
   });
 
@@ -98,11 +79,6 @@ describe('Sagas::watchAuth', () => {
       expectedYield = call(loginAction.payload.client.query, queries.loginUserQuery(fakeUser));
       actualYield = iterator.next().value;
       expect(actualYield).to.eql(expectedYield);
-    });
-
-    it('then puts loginSuccess action to dispatch', () => {
-      actualYield = iterator.next({ user: fakeUser }).value;
-      expect(actualYield).to.have.deep.property('PUT.action.type', types.LOGIN_SUCCESS);
     });
   });
 });

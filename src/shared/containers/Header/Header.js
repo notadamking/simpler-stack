@@ -6,7 +6,8 @@ import gql from 'graphql-tag';
 import checkAuth from '../../decorators/checkAuth';
 import { getUsersQuery } from '../../utils/queries';
 import { NavBar } from '../../components';
-import * as actions from '../../redux/actions/auth';
+import { logout } from '../../redux/actions/auth';
+import * as modalActions from '../../redux/actions/ui/modals';
 
 @checkAuth()
 @connect({
@@ -15,12 +16,12 @@ import * as actions from '../../redux/actions/auth';
   }),
   mapStateToProps: (state) => {
     return {
-      shouldShowLogin: state.auth.shouldShowLogin,
-      shouldShowSignup: state.auth.shouldShowSignup,
+      shouldShowLogin: state.ui.modals.shouldShowLogin,
+      shouldShowSignup: state.ui.modals.shouldShowSignup,
       user: state.auth.user
     };
   },
-  mapDispatchToProps: actions
+  mapDispatchToProps: { ...modalActions, logout }
 })
 export default class Header extends Component {
   static propTypes = {
@@ -30,16 +31,16 @@ export default class Header extends Component {
     shouldShowSignup: PropTypes.bool,
     openLoginModal: PropTypes.func.isRequired,
     openSignupModal: PropTypes.func.isRequired,
-    closeModal: PropTypes.func.isRequired,
+    closeModals: PropTypes.func.isRequired,
     logout: PropTypes.func.isRequired
   };
 
   render() {
-    const { openLoginModal, openSignupModal, closeModal, logout, data, user,
-      shouldShowLogin, shouldShowSignup } = this.props;
+    const { openLoginModal, openSignupModal, closeModals, shouldShowLogin, shouldShowSignup,
+            data, user } = this.props;
     return (
-      <NavBar openLoginModal={openLoginModal} openSignupModal={openSignupModal} closeModal={closeModal}
-        logout={logout} user={user} data={data} shouldShowLogin={shouldShowLogin} shouldShowSignup={shouldShowSignup} />
+      <NavBar openLoginModal={openLoginModal} openSignupModal={openSignupModal} closeModals={closeModals}
+        logout={this.props.logout} user={user} data={data} shouldShowLogin={shouldShowLogin} shouldShowSignup={shouldShowSignup} />
     );
   }
 }

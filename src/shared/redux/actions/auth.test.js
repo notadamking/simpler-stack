@@ -10,24 +10,6 @@ describe('Actions::auth', () => {
     });
   });
 
-  describe('Action::openLoginModal', () => {
-    it('returns action with OPEN_LOGIN_MODAL type', () => {
-      expect(actions.openLoginModal()).to.contain({ type: types.OPEN_LOGIN_MODAL });
-    });
-  });
-
-  describe('Action::openSignupModal', () => {
-    it('returns action with OPEN_SIGNUP_MODAL type', () => {
-      expect(actions.openSignupModal()).to.contain({ type: types.OPEN_SIGNUP_MODAL });
-    });
-  });
-
-  describe('Action::closeModal', () => {
-    it('returns action with CLOSE_MODAL type', () => {
-      expect(actions.closeModal()).to.contain({ type: types.CLOSE_MODAL });
-    });
-  });
-
   describe('Action::loginSuccess', () => {
     it('returns action with LOGIN_SUCCESS type and user in payload', () => {
       expect(actions.loginSuccess({})).to.contain({ type: types.LOGIN_SUCCESS });

@@ -1,13 +1,13 @@
 TODO:
 ✔ Clean up wepack.config.js @done(2016-08-01 17:27)
 ✔ Remove exports of ApolloClient instance @done(2016-08-01 10:53)
-☐ Extract UI state from auth state
+✔ Extract UI state from auth state @done(2016-08-02 23:49)
 
 
 TESTING:
 Add unit testing
   ☐ API Server
-  ☐ Redux
+  ✔ Redux @done(2016-08-02 23:49)
   ☐ Containers
   ✔ Components  @done(2016-08-01 10:12)
 ✔ Figure out a way to move redux form out of components to containers @done(2016-08-01 08:52)
