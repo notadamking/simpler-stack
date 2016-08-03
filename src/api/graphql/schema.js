@@ -1,4 +1,3 @@
-import { merge } from 'lodash';
 import { userTypes, userQueries, userMutations, userResolvers } from './schemas';
 import { EmailScalar, PasswordScalar } from './types';
 

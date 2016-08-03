@@ -18,4 +18,5 @@ Add unit testing
   to preload an ApolloProvider to mount all other containers to.
 
 EVENTUAL TODO:
+☐ Explore crowd-sourcing code platform idea
 ☐ Remove all jQuery dependencies

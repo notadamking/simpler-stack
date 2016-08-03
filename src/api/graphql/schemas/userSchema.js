@@ -1,4 +1,3 @@
-import { isEmpty, head } from 'lodash';
 import { User } from '../../models';
 
 export const userTypes = `
@@ -34,12 +33,10 @@ export const userResolvers = {
     users: async () => await User.run(),
     currentUser: (_, __, context) => context.user,
     loginUser: async (root, { email, password }) => {
-      const users = await User.filter({ email });
-      if (isEmpty(users)) {
+      const [ user ] = await User.filter({ email });
+      if (!user) {
         throw new Error('No user with that email address exists.');
-      }
-      const user = head(users);
-      if (!await user.validatePassword(password)) {
+      } else if (!await user.validatePassword(password)) {
         throw new Error('Invalid email or password.');
       }
       const authToken = user.signJwt();
@@ -48,8 +45,8 @@ export const userResolvers = {
   },
   Mutation: {
     createUser: async (root, { name, email, password }) => {
-      const exists = await User.filter({ email });
-      if (!isEmpty(exists)) {
+      const [ exists ] = await User.filter({ email });
+      if (exists) {
         throw new Error('That email address is already in use.');
       }
       const user = new User({ name, email });
