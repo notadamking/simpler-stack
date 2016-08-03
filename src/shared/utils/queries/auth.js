@@ -13,7 +13,7 @@ export const currentUserQuery = () => {
   };
 };
 
-export const loginUserQuery = (email, password) => {
+export const loginUserQuery = ({ email, password }) => {
   return {
     query: gql`
       query User($email: Email!, $password: Password!) {
@@ -33,7 +33,7 @@ export const loginUserQuery = (email, password) => {
   };
 };
 
-export const signupUserQuery = (name, email, password) => {
+export const signupUserQuery = ({ name, email, password }) => {
   return {
     mutation: gql`
       mutation User($name: String!, $email: Email!, $password: Password!) {

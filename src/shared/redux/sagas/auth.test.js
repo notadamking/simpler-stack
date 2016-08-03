@@ -10,17 +10,22 @@ import * as queries from '../../utils/queries';
 
 const client = ApolloClient();
 
+const fakeUser = {
+  name: 'fake user',
+  email: 'fake@email.com',
+  password: 'password'
+};
 const checkTokenAction = {
   type: types.CHECK_TOKEN_REQUEST,
   payload: { client }
 };
 const loginAction = {
   type: types.LOGIN_REQUEST,
-  payload: { client, email: '', password: '' }
+  payload: { client, ...fakeUser }
 };
 const signupAction = {
   type: types.SIGNUP_REQUEST,
-  payload: { client, name: '', email: '', password: '' }
+  payload: { client, ...fakeUser }
 };
 const closeModalAction = {
   type: types.CLOSE_MODAL
@@ -54,6 +59,50 @@ describe('Sagas::watchAuth', () => {
       expectedYield = call(checkTokenAction.payload.client.query, queries.currentUserQuery());
       actualYield = iterator.next().value;
       expect(actualYield).to.eql(expectedYield);
+    });
+
+    it('then puts LOGIN_FAILURE action to dispatch', () => {
+      actualYield = iterator.next().value;
+      expect(actualYield).to.have.deep.property('PUT.action.type', types.LOGIN_FAILURE);
+    });
+  });
+
+  describe('Saga::signupUserSaga', () => {
+    before(() => {
+      iterator = sagas.signupSaga(signupAction);
+    });
+
+    it('calls signupUser mutation', () => {
+      expectedYield = call(signupAction.payload.client.mutate, queries.signupUserQuery(fakeUser));
+      actualYield = iterator.next({ user: fakeUser }).value;
+      expect(actualYield).to.eql(expectedYield);
+    });
+
+    it('then puts SIGNUP_SUCCESS action to dispatch', () => {
+      actualYield = iterator.next().value;
+      expect(actualYield).to.have.deep.property('PUT.action.type', types.SIGNUP_SUCCESS);
+    });
+
+    it('then puts CLOSE_MODAL action to dispatch', () => {
+      actualYield = iterator.next().value;
+      expect(actualYield).to.have.deep.property('PUT.action.type', types.CLOSE_MODAL);
+    });
+  });
+
+  describe('Saga::loginUserSaga', () => {
+    before(() => {
+      iterator = sagas.loginSaga(loginAction);
+    });
+
+    it('calls loginUser query', () => {
+      expectedYield = call(loginAction.payload.client.query, queries.loginUserQuery(fakeUser));
+      actualYield = iterator.next().value;
+      expect(actualYield).to.eql(expectedYield);
+    });
+
+    it('then puts loginSuccess action to dispatch', () => {
+      actualYield = iterator.next({ user: fakeUser }).value;
+      expect(actualYield).to.have.deep.property('PUT.action.type', types.LOGIN_SUCCESS);
     });
   });
 });

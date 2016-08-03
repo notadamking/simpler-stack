@@ -1,4 +1,3 @@
-import { isEmpty } from 'lodash';
 import { authTokenName } from '../../../config';
 
 export const CLEAR_AUTH_ERRORS = 'auth/CLEAR_AUTH_ERRORS';
@@ -52,8 +51,8 @@ export const loginUser = ({ client, email, password }) => {
 };
 
 export const LOGIN_SUCCESS = 'auth/login_success';
-export const loginSuccess = (user, authToken) => {
-  if (!isEmpty(authToken)) {
+export const loginSuccess = ({ user, authToken }) => {
+  if (global.localStorage && authToken) {
     localStorage.setItem(authTokenName, authToken);
   }
   return {
@@ -65,7 +64,7 @@ export const loginSuccess = (user, authToken) => {
 };
 
 export const LOGIN_FAILURE = 'auth/login_failure';
-export const loginFailure = (error) => {
+export const loginFailure = ({ error }) => {
   return {
     type: LOGIN_FAILURE,
     payload: {
@@ -88,8 +87,10 @@ export const signupUser = ({ client, name, email, password }) => {
 };
 
 export const SIGNUP_SUCCESS = 'auth/signup_success';
-export const signupSuccess = (user, authToken) => {
-  localStorage.setItem(authTokenName, authToken);
+export const signupSuccess = ({ user, authToken }) => {
+  if (global.localStorage) {
+    localStorage.setItem(authTokenName, authToken);
+  }
   return {
     type: SIGNUP_SUCCESS,
     payload: {
@@ -99,7 +100,7 @@ export const signupSuccess = (user, authToken) => {
 };
 
 export const SIGNUP_FAILURE = 'auth/signup_failure';
-export const signupFailure = (error) => {
+export const signupFailure = ({ error }) => {
   return {
     type: SIGNUP_FAILURE,
     payload: {
@@ -110,7 +111,9 @@ export const signupFailure = (error) => {
 
 export const LOGOUT = 'auth/logout';
 export const logout = () => {
-  localStorage.removeItem(authTokenName);
+  if (global.localStorage) {
+    localStorage.removeItem(authTokenName);
+  }
   return {
     type: LOGOUT
   };

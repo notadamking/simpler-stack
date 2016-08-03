@@ -92,9 +92,10 @@ app.use((req, res) => {
     } else {
       await store.runSaga(rootSaga);
       res.status(200);
-      const htmlStream =
-        renderToStaticMarkup(<Html assets={webpackIsomorphicTools.assets()}
-                              client={client} store={store} renderProps={renderProps}/>);
+      res.write('<!DOCTYPE html>');
+      const htmlStream = renderToStaticMarkup(
+        <Html assets={webpackIsomorphicTools.assets()} client={client} store={store} renderProps={renderProps}/>
+      );
       htmlStream.pipe(res, { end: false });
       htmlStream.on('end', () => res.end());
     }

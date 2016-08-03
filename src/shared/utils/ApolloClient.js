@@ -5,7 +5,7 @@ export default () => {
   const networkInterface = createNetworkInterface(graphqlEndpoint);
   networkInterface.use([{
     applyMiddleware(req, next) {
-      if (__CLIENT__ && localStorage.getItem(authTokenName)) {
+      if (global.localStorage && localStorage.getItem(authTokenName)) {
         if (!req.options.headers) {
           req.options.headers = {};
         }

@@ -30,14 +30,14 @@ describe('Actions::auth', () => {
 
   describe('Action::loginSuccess', () => {
     it('returns action with LOGIN_SUCCESS type and user in payload', () => {
-      expect(actions.loginSuccess()).to.contain({ type: types.LOGIN_SUCCESS });
+      expect(actions.loginSuccess({})).to.contain({ type: types.LOGIN_SUCCESS });
       expect(actions.loginSuccess({ user: {} }).payload.user).to.be.ok;
     });
   });
 
   describe('Action::loginFailure', () => {
     it('returns action with LOGIN_FAILURE type', () => {
-      expect(actions.loginFailure()).to.contain({ type: types.LOGIN_FAILURE });
+      expect(actions.loginFailure({})).to.contain({ type: types.LOGIN_FAILURE });
     });
 
     it('returns action with user in payload', () => {
@@ -47,14 +47,14 @@ describe('Actions::auth', () => {
 
   describe('Action::signupSuccess', () => {
     it('returns action with SIGNUP_SUCCESS type and user in payload', () => {
-      expect(actions.signupSuccess()).to.contain({ type: types.SIGNUP_SUCCESS });
+      expect(actions.signupSuccess({})).to.contain({ type: types.SIGNUP_SUCCESS });
       expect(actions.signupSuccess({ user: {} }).payload.user).to.be.ok;
     });
   });
 
   describe('Action::signupFailure', () => {
     it('returns action with SIGNUP_FAILURE type and user in payload', () => {
-      expect(actions.signupFailure()).to.contain({ type: types.SIGNUP_FAILURE });
+      expect(actions.signupFailure({})).to.contain({ type: types.SIGNUP_FAILURE });
       expect(actions.signupFailure({ error: {} }).payload.error).to.be.ok;
     });
   });

@@ -3,7 +3,7 @@ const webpack = require('webpack');
 module.exports = function (config) {
   config.set({
 
-    browsers: ['Chrome'],
+    browsers: ['jsdom'],
 
     singleRun: false,
 
@@ -17,15 +17,19 @@ module.exports = function (config) {
       'tests.webpack.js': [ 'webpack', 'sourcemap' ]
     },
 
-    reporters: [ 'mocha' ],
+    reporters: [ 'webpack-error' ],
 
     plugins: [
       require("karma-webpack"),
       require("karma-mocha"),
-      require("karma-mocha-reporter"),
-      require("karma-chrome-launcher"),
+      require("karma-webpack-error-reporter"),
+      require("karma-jsdom-launcher"),
       require("karma-sourcemap-loader")
     ],
+
+    mochaReporter: {
+      showDiff: true
+    },
 
     webpack: {
       devtool: 'inline-source-map',

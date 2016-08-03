@@ -6,52 +6,44 @@ import * as actions from '../actions/auth';
 import * as types from '../actions/auth';
 
 export function *checkTokenSaga(action) {
-  if (!__CLIENT__) { return; }
   const { client } = action.payload;
-
   try {
     const { data: { currentUser } } = yield call(client.query, currentUserQuery());
-
-    if (!isEmpty(currentUser)) {
-      yield put(actions.loginSuccess(currentUser));
+    if (currentUser) {
+      yield put(actions.loginSuccess({ user: currentUser }));
     } else {
       yield put(actions.loginFailure());
     }
   } catch (error) {
-    yield put(actions.loginFailure(error));
+    yield put(actions.loginFailure({ error }));
   }
 }
 
 export function *loginSaga(action) {
   const { client, email, password } = action.payload;
-
   try {
-    const { data: { loginUser: { user, authToken } } } = yield call(client.query, loginUserQuery(email, password));
-
-    yield put(actions.loginSuccess(user, authToken));
+    const { data: { loginUser: { user, authToken } } } = yield call(client.query, loginUserQuery({ email, password }));
+    yield put(actions.loginSuccess({ user, authToken }));
     yield put(actions.closeModal());
   } catch (error) {
-    yield put(actions.loginFailure(head(error.graphQLErrors).message));
+    yield put(actions.loginFailure({ error: head(error.graphQLErrors).message }));
   }
 }
 
 export function *signupSaga(action) {
   const { client, name, email, password } = action.payload;
-
   try {
-    const { data: { createUser }, errors } = yield call(client.mutate, signupUserQuery(name, email, password));
-
-    if (!isEmpty(errors)) {
-      yield put(actions.signupFailure(head(errors).message));
+    const { data: { createUser }, errors } = yield call(client.mutate, signupUserQuery({ name, email, password }));
+    if (errors) {
+      yield put(actions.signupFailure({ error: head(errors).message }));
     } else {
       const { user, authToken } = createUser;
 
-      yield put(actions.signupSuccess(user, authToken));
+      yield put(actions.signupSuccess({ user, authToken }));
       yield put(actions.closeModal());
     }
   } catch (error) {
-    console.log('e: ', error);
-    yield put(actions.signupFailure(head(error.graphQLErrors).message));
+    yield put(actions.signupFailure({ error: head(error.graphQLErrors).message }));
   }
 }
 
