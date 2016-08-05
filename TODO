@@ -1,8 +1,7 @@
 TODO:
-✔ Clean up wepack.config.js @done(2016-08-01 17:27)
-✔ Remove exports of ApolloClient instance @done(2016-08-01 10:53)
-✔ Extract UI state from auth state @done(2016-08-02 23:49)
 ☐ Async server-validation for forms
+☐ Implement redux optimistic UI **
+☐ Remove all jQuery dependencies
 
 TESTING:
 Add unit testing
@@ -16,7 +15,3 @@ Add unit testing
 ✔ Hopefully this makes components stateless and will allow us to shallow render @done(2016-08-01 09:19)
 ☐ As for stateful containers, we can possibly use a global describe in tests.webpack.js
   to preload an ApolloProvider to mount all other containers to.
-
-EVENTUAL TODO:
-☐ Explore crowd-sourcing code platform idea
-☐ Remove all jQuery dependencies
