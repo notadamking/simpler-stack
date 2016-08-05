@@ -3,7 +3,7 @@
 ### simpler stack is a highly efficient, full-stack javascript framework built on state of the art technologies like React, Redux, RethinkDB, Apollo, Express, and Webpack.
 Speed up your workflow by taking advantage of the best of the newest technologies available.
 
-| Problem           | Meteor's solution                                               | My solution                                                         | Result                                                              |
+| Problem           | Meteor's solution                                               | simpler's solution                                                         | Result                                                              |
 |-------------------|-----------------------------------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------------|
 | Database          | [MongoDB](https://www.mongodb.org/)                             | [RethinkDB](https://www.rethinkdb.com/)                             | pub/sub, nice web GUI, easy clustering                 |
 | Database schema   | [Simple Schema](https://github.com/aldeed/meteor-simple-schema) | [GraphQL](https://github.com/graphql/graphql-js) / [ApolloServer](https://github.com/apollostack/apollo-server)                    | ApolloServer allows us to use shorthand schema language                        |
