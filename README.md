@@ -5,6 +5,7 @@ Speed up your workflow by taking advantage of the best of the newest technologie
 ![simpler-stack-logos](https://cloud.githubusercontent.com/assets/14098106/17431491/7ecd18ba-5ab7-11e6-902a-253e39aa3e6a.png)
 
 *special thanks to [mattkrick](https://github.com/mattkrick) for this awesome comparison table taken from his [meatier repo](https://github.com/mattkrick/meatier)*
+
 | Problem           | Meteor's solution                                               | simpler's solution                                                         | Motivation                                                              |
 |-------------------|-----------------------------------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------------|
 | Database          | [MongoDB](https://www.mongodb.org/)                             | [RethinkDB](https://www.rethinkdb.com/)                             | pub/sub, nice web GUI, easy clustering                 |
