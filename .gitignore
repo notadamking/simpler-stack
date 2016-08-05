@@ -1,6 +1,7 @@
 .idea/
 node_modules/
 static/assets
+static/vendor
 dist/
 *.iml
 webpack-assets.json
