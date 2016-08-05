@@ -4,7 +4,7 @@ Speed up your workflow by taking advantage of the best of the newest technologie
 
 ![simpler-stack-logos](https://cloud.githubusercontent.com/assets/14098106/17431491/7ecd18ba-5ab7-11e6-902a-253e39aa3e6a.png)
 
-| Problem           | Meteor's solution                                               | simpler's solution                                                         | Result                                                              |
+| Problem           | Meteor's solution                                               | simpler's solution                                                         | Motivation                                                              |
 |-------------------|-----------------------------------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------------|
 | Database          | [MongoDB](https://www.mongodb.org/)                             | [RethinkDB](https://www.rethinkdb.com/)                             | pub/sub, nice web GUI, easy clustering                 |
 | Database schema   | [Simple Schema](https://github.com/aldeed/meteor-simple-schema) | [GraphQL](https://github.com/graphql/graphql-js) / [ApolloServer](https://github.com/apollostack/apollo-server)                    | ApolloServer allows us to use shorthand schema language                        |
