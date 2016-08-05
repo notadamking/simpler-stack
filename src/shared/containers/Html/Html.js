@@ -49,6 +49,7 @@ export default class Html extends Component {
           <link rel="shortcut icon" href="/favicon.ico" />
           <meta charSet="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1" />
+          <link href="//fonts.googleapis.com/css?family=Lato" rel="stylesheet" type="text/css" />
           <link rel="stylesheet" type="text/css" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.2/semantic.min.css" />
           <style data-aphrodite dangerouslySetInnerHTML={{__html: css.content}}/>
           <script type="text/javascript" src="//code.jquery.com/jquery-1.10.0.min.js" />
