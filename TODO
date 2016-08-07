@@ -1,9 +1,9 @@
 TODO:
 ☐ Explore "afterware" for cleaning up GQL errors and remove user exposure
-✔ this library 'validator.js' only validates strings bug @done(2016-08-06 18:23)
 ☐ migrate to stardust
+☐ Async server-validation for forms on blur example
+✔ this library 'validator.js' only validates strings bug @done(2016-08-06 18:23)
 ✔ opt-in store persistence @done(2016-08-05 22:00)
-☐ Async server-validation for forms on blur
 ✔ Implement updateQueries @done(2016-08-05 15:32)
 ✔ Implement optimistic UI https://medium.com/apollo-stack/mutations-and-optimistic-ui-in-apollo-client-517eacee8fb0#.9gvxcznj4 @done(2016-08-05 22:00)
 ✔ Remove all jQuery dependencies @done(2016-08-06 18:23)
@@ -12,11 +12,11 @@ TESTING:
 Add unit testing
   ☐ API Server
   ✔ Redux @done(2016-08-02 23:49)
-  ☐ Containers
+  ☐ Containers:
+     ☐ we can possibly use a global describe in tests.webpack.js
+       to preload an ApolloProvider to mount all other containers to.
   ✔ Components  @done(2016-08-01 10:12)
 ✔ Figure out a way to move redux form out of components to containers @done(2016-08-01 08:52)
   ✔ Move modal back to header @done(2016-08-01 08:45)
   ✔ Email/password error props @done(2016-08-01 08:52)
 ✔ Hopefully this makes components stateless and will allow us to shallow render @done(2016-08-01 09:19)
-☐ As for stateful containers, we can possibly use a global describe in tests.webpack.js
-  to preload an ApolloProvider to mount all other containers to.
