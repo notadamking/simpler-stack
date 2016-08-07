@@ -27,7 +27,8 @@ export default class Modal extends Component {
 
   componentWillUnmount() {
     ReactDOM.unmountComponentAtNode(this.modalTarget);
-    $('.ui.modals').remove();
+    const modals = document.querySelector('.ui.modals');
+    modals.parentElement.removeChild(modals);
   }
 
   _render() {

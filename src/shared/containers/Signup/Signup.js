@@ -1,10 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-apollo';
+import { reduxForm } from 'redux-form';
 
 import { SignupForm } from '../../components';
 import { signupUser } from '../../redux/actions/auth';
-import validateForm from '../../decorators/validateForm';
-import schema from './validate';
+import validate from './validate';
 
 @connect({
   mapStateToProps: (state) => {
@@ -14,10 +14,10 @@ import schema from './validate';
     };
   }
 })
-@validateForm({
+@reduxForm({
   form: 'signup',
   fields: [ 'name', 'email', 'password' ],
-  schema
+  validate
 })
 export default class Signup extends Component {
   static propTypes = {

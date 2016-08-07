@@ -37,7 +37,7 @@ export default class SignupForm extends Component {
             error: name.touched && name.error
           })}>
             <Input className="icon">
-              <input name="name" placeholder="name" type="name" {...name}/>
+              <input name="name" placeholder="name" type="text" {...name}/>
               <Icon className="talk"/>
             </Input>
           </Field>

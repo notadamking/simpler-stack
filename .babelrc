@@ -11,6 +11,7 @@
   "env": {
     "development": {
       "plugins": [
+        "system-import-transformer",
         "typecheck",
         ["react-transform", {
             "transforms": [{

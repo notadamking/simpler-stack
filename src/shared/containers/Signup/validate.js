@@ -1,7 +1,20 @@
-import Joi from 'joi';
+import validator from 'validator';
 
-export default Joi.object({
-  name: Joi.string().required().trim().lowercase(),
-  email: Joi.string().required().email().max(255).trim().lowercase(),
-  password: Joi.string().required().min(6).max(60)
-});
+export default (values) => {
+  const errors = {};
+  if (typeof values.email === 'string' && !validator.isEmail(values.email)) {
+    errors.email = 'email address must be valid';
+  }
+  if (values.email && values.email.length > 255) {
+    errors.email = 'email address cannot be longer than 255 characters';
+  }
+  if (values.password && values.password.length < 6) {
+    errors.password = 'password must be at least 6 characters long';
+  }
+  Object.keys(values).map((key) => {
+    if (values[key] === '') {
+      errors[key] = `${key} is required`;
+    }
+  });
+  return errors;
+};

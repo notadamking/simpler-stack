@@ -1,7 +1,12 @@
 TODO:
-☐ Async server-validation for forms
-☐ Implement redux optimistic UI **
-☐ Remove all jQuery dependencies
+☐ Explore "afterware" for cleaning up GQL errors and remove user exposure
+✔ this library 'validator.js' only validates strings bug @done(2016-08-06 18:23)
+☐ migrate to stardust
+✔ opt-in store persistence @done(2016-08-05 22:00)
+☐ Async server-validation for forms on blur
+✔ Implement updateQueries @done(2016-08-05 15:32)
+✔ Implement optimistic UI https://medium.com/apollo-stack/mutations-and-optimistic-ui-in-apollo-client-517eacee8fb0#.9gvxcznj4 @done(2016-08-05 22:00)
+✔ Remove all jQuery dependencies @done(2016-08-06 18:23)
 
 TESTING:
 Add unit testing

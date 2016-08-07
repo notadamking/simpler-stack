@@ -1,14 +1,18 @@
 import * as types from '../actions/auth';
+import { REHYDRATE } from 'redux-persist/constants';
 
 export const initialState = {
   authenticated: false,
   authenticating: false,
   user: undefined,
-  error: undefined
 };
 
 export default function reducer(state = initialState, action = {}) {
   switch (action.type) {
+    case REHYDRATE:
+      return {
+        ...action.payload.auth
+      };
     case types.CLEAR_AUTH_ERRORS:
       return {
         ...state,

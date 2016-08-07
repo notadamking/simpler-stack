@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import { routerMiddleware } from 'react-router-redux';
 import createSagaMiddleware from 'redux-saga';
 import createLogger from 'redux-logger';
+import { persistStore, autoRehydrate } from 'redux-persist';
 
 import { createReducers } from './reducers';
 
@@ -27,7 +28,8 @@ export default (history, client, initialState) => {
     finalCreateStore = compose(
       applyMiddleware(...middleware),
       window.devToolsExtension ? window.devToolsExtension() : DevTools.instrument(),
-      persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/))
+      persistState(window.location.href.match(/[?&]debug_session=([^&]+)\b/)),
+      autoRehydrate()
     )(createStore);
   } else {
     finalCreateStore = applyMiddleware(...middleware)(createStore);
@@ -35,10 +37,14 @@ export default (history, client, initialState) => {
 
   const store = finalCreateStore(createReducers(client), initialState);
 
-  if (__DEVELOPMENT__ && module.hot) {
+  if (__DEVELOPMENT__ && module && module.hot) {
     module.hot.accept('./reducers', () => {
       store.replaceReducer(createReducers(client));
     });
+  }
+
+  if (__CLIENT__) {
+    persistStore(store);
   }
 
   store.runSaga = sagaMiddleware.run;

@@ -1,8 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-apollo';
+import { reduxForm } from 'redux-form';
 
-import validateForm from '../../decorators/validateForm';
-import schema from './validate';
+import validate from './validate';
 import { LoginForm } from '../../components';
 import { loginUser } from '../../redux/actions/auth';
 
@@ -14,10 +14,10 @@ import { loginUser } from '../../redux/actions/auth';
     };
   }
 })
-@validateForm({
+@reduxForm({
   form: 'login',
   fields: [ 'email', 'password' ],
-  schema
+  validate
 })
 export default class Login extends Component {
   static propTypes = {

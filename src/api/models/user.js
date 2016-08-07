@@ -2,7 +2,6 @@ import Promise from 'bluebird';
 import thinky from '../thinky';
 import jwt from 'jsonwebtoken';
 import { secretKey, isProduction } from '../../config';
-import { isEmail } from 'validator';
 
 const { type } = thinky;
 const bcrypt = Promise.promisifyAll(require('bcryptjs'));
@@ -11,7 +10,7 @@ const verifyJwt = Promise.promisify(jwt.verify);
 const User = thinky.createModel('user', {
   id: type.string(),
   name: type.string(),
-  email: type.string().validator(isEmail),
+  email: type.string(),
   salt: type.string(),
   hash: type.string(),
 });

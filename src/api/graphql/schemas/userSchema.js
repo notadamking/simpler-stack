@@ -5,11 +5,7 @@ export const userTypes = `
     id: String!
     name: String!
     email: Email!
-  }
-
-  type AuthedUser {
-    user: User!
-    authToken: String!
+    authToken: String
   }
 `;
 
@@ -17,17 +13,14 @@ export const userQueries = `
   user(id: String!): User
   users: [User]
   currentUser: User
-  loginUser(email: Email!, password: Password!): AuthedUser
+  loginUser(email: Email!, password: Password!): User
 `;
 
 export const userMutations = `
-  createUser(name: String!, email: Email!, password: Password!): AuthedUser
+  createUser(name: String!, email: Email!, password: Password!): User
 `;
 
 export const userResolvers = {
-  AuthedUser: {
-    user: (authedUser) => authedUser.user
-  },
   Query: {
     user: async (root, { id }) => User.get(id),
     users: async () => await User.run(),
@@ -36,11 +29,14 @@ export const userResolvers = {
       const [ user ] = await User.filter({ email });
       if (!user) {
         throw new Error('No user with that email address exists.');
-      } else if (!await user.validatePassword(password)) {
+      } else if (! await user.validatePassword(password)) {
         throw new Error('Invalid email or password.');
       }
-      const authToken = user.signJwt();
-      return { user, authToken };
+      const authedUser = {
+        ...user,
+        authToken: user.signJwt()
+      };
+      return authedUser;
     },
   },
   Mutation: {
@@ -51,8 +47,11 @@ export const userResolvers = {
       }
       const user = new User({ name, email });
       await user.setPassword(password);
-      const authToken = user.signJwt();
-      return { user, authToken };
+      const authedUser = {
+        ...user,
+        authToken: user.signJwt()
+      };
+      return authedUser;
     }
   }
 };

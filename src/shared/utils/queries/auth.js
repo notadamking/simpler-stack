@@ -3,7 +3,7 @@ import gql from 'graphql-tag';
 export const currentUserQuery = () => {
   return {
     query: gql`
-    query {
+    query currentUser {
       currentUser {
         id
         email
@@ -18,10 +18,8 @@ export const loginUserQuery = ({ email, password }) => {
     query: gql`
       query User($email: Email!, $password: Password!) {
         loginUser(email: $email, password: $password) {
-          user {
-            id
-            email
-          }
+          id
+          email
           authToken
         }
       }
@@ -38,11 +36,9 @@ export const signupUserQuery = ({ name, email, password }) => {
     mutation: gql`
       mutation User($name: String!, $email: Email!, $password: Password!) {
         createUser(name: $name, email: $email, password: $password) {
-          user {
-            id
-            name
-            email
-          }
+          id
+          name
+          email
           authToken
         }
       }
@@ -51,6 +47,21 @@ export const signupUserQuery = ({ name, email, password }) => {
       name,
       email,
       password
+    },
+    updateQueries: {
+      users: (previousResult, { mutationResult }) => {
+        return {
+          users: [ ...previousResult.users, mutationResult.data.createUser ]
+        };
+      }
+    },
+    optimisticResponse: {
+      createUser: {
+        id: 0,
+        authToken: 0,
+        name,
+        email,
+      }
     }
   };
 };

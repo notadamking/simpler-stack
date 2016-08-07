@@ -16,8 +16,7 @@ export default () => {
   }]);
   return new ApolloClient({
     networkInterface,
-    shouldBatch: !__DEVELOPMENT__,
-    formatError: (error) => `GQL Error: ${error}`,
-    printErrors: (__DEVELOPMENT__)
+    shouldBatch: true, // !__DEVELOPMENT__ was here for some reason,
+    dataIdFromObject: object => object.id
   });
 };

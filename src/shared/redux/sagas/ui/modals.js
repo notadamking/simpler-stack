@@ -1,12 +1,12 @@
 import { takeLatest } from 'redux-saga';
 import { take, put, call, fork } from 'redux-saga/effects';
 
-import * as authActions from '../../actions/auth';
+import * as formActions from '../../actions/ui/forms';
 import * as types from '../../actions/ui/modals';
 
 export function *closeModalsSaga() {
-  yield put(authActions.clearErrors());
-  $('.dimmed').removeClass('dimmed');
+  yield put(formActions.clearErrors());
+  document.querySelector('.dimmed').classList.remove('dimmed');
 }
 
 export function *watchModals() {

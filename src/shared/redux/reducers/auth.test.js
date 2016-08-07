@@ -14,17 +14,6 @@ describe('Reducers::auth', () => {
     })).to.eql(initialState);
   });
 
-  describe('Reducer::CLEAR_AUTH_ERRORS', () => {
-    it('removes any errors from auth state', () => {
-      expect(reducer(initialState, {
-        type: types.CLEAR_AUTH_ERRORS
-      })).to.eql({
-        ...initialState,
-        error: undefined
-      });
-    });
-  });
-
   describe('Reducer::CHECK_TOKEN_REQUEST', () => {
     it('sets authenticating to true', () => {
       expect(reducer(initialState, {

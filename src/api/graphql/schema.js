@@ -29,8 +29,5 @@ export const resolvers = {
   },
   RootMutation: {
     ...userResolvers.Mutation
-  },
-  AuthedUser: {
-    ...userResolvers.AuthedUser
   }
 };

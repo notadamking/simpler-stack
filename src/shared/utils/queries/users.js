@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 export const getUsersQuery = {
   query: gql`
-  query {
+  query users {
     users {
       id,
       email

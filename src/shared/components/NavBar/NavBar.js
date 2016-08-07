@@ -60,7 +60,7 @@ export default class NavBar extends Component {
         </Menu>
         <Container className="centered grid">
           <Label className="blue large">
-            <Icon className="users" /> {data && data.users && data.users.length}
+            <Icon className="users" /> {(data && data.users) ? data.users.length : 0}
           </Label>
         </Container>
         {shouldShowLogin && (

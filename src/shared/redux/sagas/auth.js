@@ -3,6 +3,7 @@ import { take, put, call, fork } from 'redux-saga/effects';
 import { currentUserQuery, loginUserQuery, signupUserQuery } from '../../utils/queries';
 import * as actions from '../actions/auth';
 import * as modalActions from '../actions/ui/modals';
+import * as formActions from '../actions/ui/forms';
 import * as types from '../actions/auth';
 
 export function *checkTokenSaga(action) {
@@ -22,12 +23,13 @@ export function *checkTokenSaga(action) {
 export function *loginSaga(action) {
   const { client, email, password } = action.payload;
   try {
-    const { data: { loginUser: { user, authToken } } } = yield call(client.query, loginUserQuery({ email, password }));
-    yield put(actions.loginSuccess({ user, authToken }));
+    const { data: { loginUser } } = yield call(client.query, loginUserQuery({ email, password }));
+    yield put(actions.loginSuccess({ user: loginUser }));
     yield put(modalActions.closeModals());
   } catch (err) {
     const [ error ] = err.graphQLErrors;
-    yield put(actions.loginFailure({ error }));
+    yield put(actions.loginFailure());
+    yield put(formActions.loginSubmitError({ error }));
   }
 }
 
@@ -37,16 +39,16 @@ export function *signupSaga(action) {
     const { data: { createUser }, errors } = yield call(client.mutate, signupUserQuery({ name, email, password }));
     if (errors) {
       const [ error ] = errors;
-      yield put(actions.signupFailure({ error }));
+      yield put(actions.signupFailure());
+      yield put(formActions.signupSubmitError({ error }));
     } else {
-      const { user, authToken } = createUser;
-
-      yield put(actions.signupSuccess({ user, authToken }));
+      yield put(actions.signupSuccess({ user: createUser }));
       yield put(modalActions.closeModals());
     }
   } catch (err) {
     const [ error ] = err.graphQLErrors;
-    yield put(actions.signupFailure({ error }));
+    yield put(actions.signupFailure());
+    yield put(formActions.signupSubmitError({ error }));
   }
 }
 
