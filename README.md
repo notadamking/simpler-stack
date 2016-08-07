@@ -1,5 +1,5 @@
 # simpler stack
-### simpler stack is a highly efficient, full-stack javascript framework built on state of the art technologies like React, Redux, RethinkDB, Apollo, Express, and Webpack.
+### ***simpler stack*** is a highly efficient, full-stack javascript framework built on state of the art technologies like React, Redux, RethinkDB, Apollo, Express, and Webpack
 Speed up your workflow by taking advantage of the best of the newest technologies available. This boilerplate framework was created to make using all these new, powerful technologies a lot *simpler*.
 
 ![simpler-stack-logos](https://cloud.githubusercontent.com/assets/14098106/17431491/7ecd18ba-5ab7-11e6-902a-253e39aa3e6a.png)
@@ -20,10 +20,10 @@ Speed up your workflow by taking advantage of the best of the newest technologie
 | Front-end         | [Blaze](https://www.meteor.com/blaze)                           | [React](https://facebook.github.io/react/)                          | React is the future of UI development                     |
 | Build system      | meteor                                                          | [webpack](https://webpack.github.io/)                               | Webpack to simplify building all the things                         |
 | CSS               | magically bundle & serve                                        | [aphrodite](https://github.com/khan/aphrodite)           |  inline styles, all the features of sass, works with server rendering |
-| Optimistic UI     | latency compensation                                            | [redux-optimistic-ui](https://github.com/mattkrick/redux-optimistic-ui)  | relay-like optimism                                         |
+| Optimistic UI     | latency compensation                                            | [ApolloClient](https://github.com/apollostack/apollo-client)  | optimistic ui with automatic rollback | 
 | Testing           | Velocity (or nothing at all)                                    | [karma](https://github.com/karma-runner/karma) / [mocha](https://github.com/mochajs/mocha) / [chai](https://github.com/chaijs/chai) / [enzyme](https://github.com/airbnb/enzyme)                          | JQuery-like selectors, automatic test re-run on code change, simple assertions         |
 | Linting           | Your choice                                                     | [eslint](https://github.com/eslint/eslint)                              | the industry standard, live linting with atom plugin 'linter-eslint'                                          |
-| Routing           | [FlowRouter](https://github.com/kadirahq/flow-router)           | [react-router-redux](https://github.com/reactjs/react-router-redux) | server-rendered react-router, async routes        |
+| Routing           | [FlowRouter](https://github.com/kadirahq/flow-router)           | [react-router-redux](https://github.com/reactjs/react-router-redux) | ssr capable react router, async routes |
 | Server            | Node 0.10.41                                                    | Node 5                                                              | ...                                |                             |
  
 ##Installation
