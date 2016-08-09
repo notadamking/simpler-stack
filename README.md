@@ -1,6 +1,6 @@
 # simpler stack
 ### ***simpler stack*** is a universal javascript full-stack framework built on the best of the latest web technologies like React, Redux, GraphQL, RethinkDB, Apollo, Express, and Webpack
-The goal when creating this universal javascript stack was to greatly decrease the size of the boilerplate on a new project, but also include the best of the newest technologies available. You'll be amazed at how *simple* and quick the development process is when using this stack.
+The goal when creating this universal javascript stack was to greatly decrease the size of the boilerplate on a new project, but also include the best of the newest technologies available. It can be a lot to digest at first, but you'll be amazed at how *simple* and quick the development process is when using this stack.
 
 ![simpler-stack-logos](https://cloud.githubusercontent.com/assets/14098106/17431491/7ecd18ba-5ab7-11e6-902a-253e39aa3e6a.png)
 
