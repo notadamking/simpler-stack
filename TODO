@@ -1,4 +1,5 @@
 TODO:
+☐ Move tests to __TESTS__ folder
 ☐ Explore "afterware" for cleaning up GQL errors and remove user exposure
 ✔ this library 'validator.js' only validates strings bug @done(2016-08-06 18:23)
 ☐ migrate to stardust

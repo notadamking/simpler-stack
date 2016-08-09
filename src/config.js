@@ -14,12 +14,12 @@ module.exports = Object.assign({
   port: process.env.PORT || 3000,
   apiHost: process.env.APIHOST || 'localhost',
   apiPort: process.env.APIPORT || 3030,
-  authTokenName: 'GREEN_STACK_TOKEN',
+  authTokenName: 'UIBUFFS_TOKEN',
   graphqlEndpoint: '/api/graphql',
-  secretKey: '29b5c43f-39bf-4c12-9243-6c0180d6d600',
+  secretKey: 'd35d1690-7f39-4676-830d-7dc8720b1471',
   rethinkDB: {
     host: 'localhost',
     port: 28015,
-    db: 'green_stack'
+    db: 'uibuffs'
   }
 }, environment);

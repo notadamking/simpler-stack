@@ -1,29 +1,14 @@
 {
-  "name": "GREEN-stack-example",
-  "description": "Example of a webapp using the GREEN stack: a highly efficient, fullstack javascript framework that utilizes Graphql, REact, REdux, REthinkdb, Express, and Node.js.",
+  "name": "UI_Buffs",
+  "description": "A community for UI/UX enthusiasts and connoisseurs of all levels to share ideas",
   "author": "Adam King <adamjking3@gmail.com> (http://github.com/adamjking3)",
   "license": "MIT",
-  "version": "0.9.0",
+  "version": "0.0.1",
   "repository": {
     "type": "git",
-    "url": "https://github.com/adamjking3/GREEN"
+    "url": ""
   },
-  "homepage": "https://github.com/adamjking3/GREEN",
-  "keywords": [
-    "graphql",
-    "react",
-    "redux",
-    "rethinkdb",
-    "express",
-    "node",
-    "isomorphic",
-    "universal",
-    "modern",
-    "realtime",
-    "starter",
-    "boilerplate",
-    "ES7"
-  ],
+  "homepage": "https://uibuffs.com/",
   "main": "bin/web-server.js",
   "scripts": {
     "start": "concurrently --kill-others \"npm run start-prod\" \"npm run start-prod-api\"",
@@ -38,7 +23,8 @@
     "dev": "concurrently --kill-others \"npm run watch-client\" \"npm run start-dev\" \"npm run start-dev-api\"",
     "test": "karma start",
     "test-node": "./node_modules/mocha/bin/mocha $(find api -name '*-test.js') --compilers js:babel-core/register",
-    "test-node-watch": "./node_modules/mocha/bin/mocha $(find api -name '*-test.js') --compilers js:babel-core/register --watch"
+    "test-node-watch": "./node_modules/mocha/bin/mocha $(find api -name '*-test.js') --compilers js:babel-core/register --watch",
+    "sass": "node-sass --include-path ./node_modules sass/main.scss static/css/theme.css"
   },
   "betterScripts": {
     "start-prod": {
@@ -92,6 +78,7 @@
     }
   },
   "dependencies": {
+    "@sketchpixy/rubix": "^1.1.3",
     "aphrodite": "^0.5.0",
     "apollo-client": "^0.4.11",
     "apollo-server": "^0.1.5",
@@ -119,10 +106,13 @@
     "graphql-errors": "^2.1.0",
     "graphql-tools": "^0.6.2",
     "http-proxy": "^1.12.0",
+    "intl-messageformat": "^1.3.0",
+    "javascript-time-ago": "^0.4.3",
     "joi": "^9.0.1",
     "jsonwebtoken": "^7.1.6",
     "lodash": "^4.14.1",
     "mocha": "^3.0.1",
+    "node-sass": "^3.8.0",
     "node-uuid": "^1.4.7",
     "pretty-error": "^2.0.0",
     "react": "^15.1.0",
@@ -134,6 +124,9 @@
     "react-router": "^2.6.1",
     "react-router-redux": "^4.0.0",
     "react-semantify": "^0.5.1",
+    "react-time": "^4.2.0",
+    "react-time-ago": "^0.2.2",
+    "react-timeago": "^3.1.2",
     "redux": "^3.0.4",
     "redux-form": "^5.3.2",
     "redux-logger": "^2.6.1",

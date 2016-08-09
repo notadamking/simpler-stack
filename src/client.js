@@ -11,10 +11,10 @@ import { syncHistoryWithStore } from 'react-router-redux';
 import { StyleSheet } from 'aphrodite';
 import withScroll from 'scroll-behavior';
 
-import createStore from './shared/redux/store';
-import rootSaga from './shared/redux/sagas';
-import getRoutes from './shared/routes';
-import ApolloClient from './shared/utils/ApolloClient';
+import createStore from './common/redux/store';
+import rootSaga from './common/redux/sagas';
+import getRoutes from './common/routes';
+import ApolloClient from './common/utils/ApolloClient';
 
 const dest = document.getElementById('content');
 

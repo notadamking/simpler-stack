@@ -22,11 +22,11 @@ export const userMutations = `
 
 export const userResolvers = {
   Query: {
-    user: async (root, { id }) => User.get(id),
+    user: async (root, { id }) => await User.get(id).run(),
     users: async () => await User.run(),
     currentUser: (_, __, context) => context.user,
     loginUser: async (root, { email, password }) => {
-      const [ user ] = await User.filter({ email });
+      const [ user ] = await User.filter({ email }).run();
       if (!user) {
         throw new Error('No user with that email address exists.');
       } else if (! await user.validatePassword(password)) {
@@ -41,7 +41,7 @@ export const userResolvers = {
   },
   Mutation: {
     createUser: async (root, { name, email, password }) => {
-      const [ exists ] = await User.filter({ email });
+      const [ exists ] = await User.filter({ email }).run();
       if (exists) {
         throw new Error('That email address is already in use.');
       }

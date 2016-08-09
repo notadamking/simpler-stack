@@ -11,11 +11,11 @@ import { createMemoryHistory, match, RouterContext, browserHistory } from 'react
 import { syncHistoryWithStore } from 'react-router-redux';
 import { host, port, apiHost, apiPort } from './config';
 
-import { Html } from './shared/containers';
-import getRoutes from './shared/routes';
-import createStore from './shared/redux/store';
-import rootSaga from './shared/redux/sagas';
-import ApolloClient from './shared/utils/ApolloClient';
+import { Html } from './common/containers';
+import getRoutes from './common/routes';
+import createStore from './common/redux/store';
+import rootSaga from './common/redux/sagas';
+import ApolloClient from './common/utils/ApolloClient';
 
 const client = ApolloClient();
 const targetUrl = `http://${apiHost}:${apiPort}`;

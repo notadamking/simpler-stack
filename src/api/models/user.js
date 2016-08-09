@@ -1,19 +1,29 @@
 import Promise from 'bluebird';
-import thinky from '../thinky';
 import jwt from 'jsonwebtoken';
-import { secretKey, isProduction } from '../../config';
 
-const { type } = thinky;
+import thinky from '../thinky';
+import { secretKey, isProduction } from '../../config';
+import Post from './post';
+import Comment from './comment';
+
 const bcrypt = Promise.promisifyAll(require('bcryptjs'));
 const verifyJwt = Promise.promisify(jwt.verify);
-
+const { type } = thinky;
 const User = thinky.createModel('user', {
   id: type.string(),
   name: type.string(),
   email: type.string(),
   salt: type.string(),
   hash: type.string(),
+  createdAt: type.date().default(Date.now()),
+  posts: type.array().default([]),
 });
+
+User.hasMany(Post, 'posts', 'id', 'authorId');
+Post.belongsTo(User, 'user', 'authorId', 'id');
+
+Comment.hasOne(User, 'user', 'id', 'authorId');
+User.belongsTo(Comment, 'comment', 'authorId', 'id');
 
 User.define('signJwt', function signJwt() {
   return jwt.sign({ id: this.id }, secretKey, { expiresIn: '7d' });
