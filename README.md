@@ -47,7 +47,7 @@ The goal when creating this universal javascript stack was to greatly decrease t
  - https://github.com/GordyD/3ree
 
 ##Contributing
- - Pull requests welcomed!
+ - Docs and some unit testing still needs to be finished. Pull requests welcomed!
  - Feel free to submit bug reports as an issue.
 
 ##Changelog
