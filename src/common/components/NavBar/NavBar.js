@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { Menu, Item, Icon, Container, Label } from 'react-semantify';
+import { Link } from 'react-router';
 
 import { Modal } from '../';
 import { Login, Signup } from '../../containers';
@@ -32,12 +33,12 @@ export default class NavBar extends Component {
     return (
       <nav>
         <Menu className="top attached blue">
-          <Item className="active" type="link">
+          <Link to="/" className="active item">
             <Icon className="home" /> home
-          </Item>
-          <Item type="link">
+          </Link>
+          <Link to="/chat" className="item">
             <Icon className="chat" /> chat
-          </Item>
+          </Link>
           {!user ? (
             <div className="right menu">
               <Item type="link" onClick={openSignupModal}>
@@ -58,11 +59,6 @@ export default class NavBar extends Component {
             </div>
           )}
         </Menu>
-        <Container className="centered grid">
-          <Label className="blue large">
-            <Icon className="users" /> {data && data.users ? data.users.length : 0}
-          </Label>
-        </Container>
         {shouldShowLogin && (
           <Modal onHide={closeModals} classNames="small">
             <Login />

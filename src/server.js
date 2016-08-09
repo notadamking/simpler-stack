@@ -3,14 +3,16 @@ import React from 'react';
 import favicon from 'serve-favicon';
 import compression from 'compression';
 import http from 'http';
-import httpProxy from 'http-proxy';
 import path from 'path';
 import PrettyError from 'pretty-error';
+import { apolloServer } from 'apollo-server';
 import { renderToStaticMarkup, renderToString } from 'react-dom-stream/server';
 import { createMemoryHistory, match, RouterContext, browserHistory } from 'react-router';
 import { syncHistoryWithStore } from 'react-router-redux';
-import { host, port, apiHost, apiPort } from './config';
 
+import { host, port } from './config';
+import { schema, resolvers } from './api/graphql/schema';
+import { User } from './api/models';
 import { Html } from './common/containers';
 import getRoutes from './common/routes';
 import createStore from './common/redux/store';
@@ -18,46 +20,24 @@ import rootSaga from './common/redux/sagas';
 import ApolloClient from './common/utils/ApolloClient';
 
 const client = ApolloClient();
-const targetUrl = `http://${apiHost}:${apiPort}`;
 const pretty = new PrettyError();
 const app = new Express();
 const server = new http.Server(app);
-const proxy = httpProxy.createProxyServer({
-  target: targetUrl,
-  ws: true
-});
 
 app.use(compression());
 app.use(favicon(path.join(__dirname, '..', 'static', 'favicon.ico')));
 
 app.use(Express.static(path.join(__dirname, '..', 'static')));
 
-// Proxy to API server
-app.use('/api', (req, res) => {
-  proxy.web(req, res, { target: targetUrl });
-});
-
-app.use('/ws', (req, res) => {
-  proxy.web(req, res, { target: targetUrl + '/ws' });
-});
-
-server.on('upgrade', (req, socket, head) => {
-  proxy.ws(req, socket, head);
-});
-
-// added the error handling to avoid https://github.com/nodejitsu/node-http-proxy/issues/527
-proxy.on('error', (error, req, res) => {
-  let json;
-  if (error.code !== 'ECONNRESET') {
-    console.error('proxy error', error);
+app.use('/api/graphql', apolloServer(async (req) => ({
+  schema,
+  resolvers,
+  graphiql: true,
+  pretty: true,
+  context: {
+    user: await User.fromToken(req.headers.authorization).catch(() => {})
   }
-  if (!res.headersSent) {
-    res.writeHead(500, { 'content-type': 'application/json' });
-  }
-
-  json = { error: 'proxy_error', reason: error.message };
-  res.end(JSON.stringify(json));
-});
+})));
 
 app.use((req, res) => {
   if (__DEVELOPMENT__) {
@@ -107,7 +87,7 @@ if (port) {
     if (err) {
       console.error(err);
     }
-    console.info('----\n==> ✅  Server-rendered app is running, talking to API server on %s.', apiPort);
+    console.info('----\n==> ✅  Server-rendered app and GraphQL server are running.');
     console.info('==> 💻  Open http://%s:%s in a browser to view the app.', host, port);
   });
 } else {

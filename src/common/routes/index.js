@@ -1,6 +1,10 @@
 import React from 'react';
 import { IndexRoute, Route } from 'react-router';
-import { App, Chat, Home, NotFound } from './containers';
+
+import App from './App';
+import Chat from './Chat/Chat';
+import Home from './Home/Home';
+import NotFound from './NotFound/NotFound';
 
 export default (store) => {
   return (

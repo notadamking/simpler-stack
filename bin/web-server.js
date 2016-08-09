@@ -1,5 +1,20 @@
-#!/usr/bin/env node
-require('../server.babel'); // babel registration (runtime transpilation for node)
+//  enable runtime transpilation to use ES6/7 in node
+
+const fs = require('fs');
+
+const babelrc = fs.readFileSync('./.babelrc');
+let config;
+
+try {
+  config = JSON.parse(babelrc);
+} catch (err) {
+  console.error('==>     ERROR: Error parsing your .babelrc.');
+  console.error(err);
+}
+
+require('babel-register')(config);
+require('babel-polyfill');
+
 const path = require('path');
 const rootDir = path.resolve(__dirname, '..');
 /**

@@ -11,9 +11,6 @@ import * as modalActions from '../../redux/actions/ui/modals';
 
 @checkAuth()
 @connect({
-  mapQueriesToProps: ({ ownProps, state }) => ({
-    data: getUsersQuery
-  }),
   mapStateToProps: (state) => {
     return {
       shouldShowLogin: state.ui.modals.shouldShowLogin,
@@ -26,7 +23,6 @@ import * as modalActions from '../../redux/actions/ui/modals';
 export default class Header extends Component {
   static propTypes = {
     user: PropTypes.object,
-    data: PropTypes.object,
     shouldShowLogin: PropTypes.bool,
     shouldShowSignup: PropTypes.bool,
     openLoginModal: PropTypes.func.isRequired,
@@ -37,10 +33,10 @@ export default class Header extends Component {
 
   render() {
     const { openLoginModal, openSignupModal, closeModals, shouldShowLogin, shouldShowSignup,
-            data, user } = this.props;
+            user } = this.props;
     return (
       <NavBar openLoginModal={openLoginModal} openSignupModal={openSignupModal} closeModals={closeModals}
-        logout={this.props.logout} user={user} data={data} shouldShowLogin={shouldShowLogin} shouldShowSignup={shouldShowSignup} />
+        logout={this.props.logout} user={user} shouldShowLogin={shouldShowLogin} shouldShowSignup={shouldShowSignup} />
     );
   }
 }

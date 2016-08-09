@@ -10,7 +10,7 @@ module.exports = function (config) {
     frameworks: [ 'mocha' ],
 
     files: [
-      'tests.webpack.js'
+      './webpack/tests.webpack.js'
     ],
 
     preprocessors: {
