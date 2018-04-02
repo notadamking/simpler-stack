@@ -4,7 +4,7 @@ The goal when creating this universal javascript stack was to greatly decrease t
 
 ![simpler-stack-logos](https://cloud.githubusercontent.com/assets/14098106/17431491/7ecd18ba-5ab7-11e6-902a-253e39aa3e6a.png)
 
-*special thanks to [mattkrick](https://github.com/mattkrick) for this awesome comparison table borrowed from his [meatier repo](https://github.com/mattkrick/meatier)*
+*special thanks to [mattkrick](https://github.com/mattkrick) for this comparison table, which is borrowed from his [meatier repo](https://github.com/mattkrick/meatier)*
 
 | Problem           | Meteor's solution                                               | simpler's solution                                                         | Motivation                                                              |
 |-------------------|-----------------------------------------------------------------|---------------------------------------------------------------------|---------------------------------------------------------------------|
@@ -26,31 +26,28 @@ The goal when creating this universal javascript stack was to greatly decrease t
 | Routing           | [FlowRouter](https://github.com/kadirahq/flow-router)           | [react-router-redux](https://github.com/reactjs/react-router-redux) | ssr capable react router, async routes |
 | Server            | Node 0.10.41                                                    | Node 5                                                              | ...                                |                             |
  
-##Installation
+## Installation
 - `brew install rethinkdb`
 - `rethinkdb` (in second terminal window)
 - `git clone` this repo
 - `cd simpler-stack`
 - `npm install`
 
-##Development
+## Development
 - `npm run dev` (hot reloaded dev server)
 
-##Production
+## Production
 - `npm run build` 
 - `npm run start`
 
-##Similar Projects
+## Similar Projects
  - https://github.com/erikras/react-redux-universal-hot-example (Huge motivation for the architecture of this stack, this was the original boilerplate forked to create this stack)
  - https://github.com/mattkrick/meatier (Another big motivation, but over complex. I also borrowed the table above from this repo)
  - https://github.com/kriasoft/react-starter-kit
  - https://github.com/GordyD/3ree
 
-##Contributing
- - Docs and some unit testing still needs to be finished. Pull requests welcomed!
- - Feel free to submit bug reports as an issue.
-
-##Changelog
+## Contributing
+ - This project is massively outdated and could do with an overhaul, but unfortunately I am too busy with other projects at this time to update it myself. I am willing to review/accept any pull requests!
   
-##License
+## License
 MIT
